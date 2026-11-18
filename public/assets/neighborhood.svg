@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400">
+  <defs>
+    <pattern id="dots" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="1.2" cy="1.2" r=".75" fill="#a7a2c1" opacity=".3"/></pattern>
+  </defs>
+  <rect width="640" height="400" fill="#eeebf6"/>
+  <rect width="640" height="400" fill="url(#dots)"/>
+  <g fill="#e0e6da"><path d="M13 199 111 181l47 40-15 41-113 19Z"/><path d="m444 18 104-24 52 99-27 24-98-7Z"/><path d="m471 300 133-55 43 58v98H537Z"/></g>
+  <g fill="none" stroke="#fcfbff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m-20 91 119 3 85 29 65-9 120-35 153 70 140-51M-7 158l114-19 67 15 77-2m-66-29 6 112-35 74 32 105M90 0l11 94-35 92 9 161 6 57m71-421-27 68 35 55m68-106 30 114-7 77-5 68 20 144m-279-79 122-24 105-13 103 4 43-13 129 10 152-35m-649-2 75 1 87-27 95-12 91-31m215-115-67 23-49-15-61-29m-9 291-14-75 2-99 25-65-21-36m182 268-22-83-44-50-11-77 8-57 36-99m-81 369 5-81 105-59 69-5m-274 67 97-21 35-27 141-36"/>
+    <path d="M283-18 294 92 320 184 333 273 358 418" stroke="#dcd4f2" stroke-width="24"/>
+    <path d="M283-18 294 92 320 184 333 273 358 418" stroke="#fbf8ff" stroke-width="15"/>
+  </g>
+  <g fill="#635b79" font-family="system-ui,sans-serif" font-size="12" font-weight="700" letter-spacing="1.1">
+    <text x="117" y="338">RAJEEV GANDHI NAGAR</text>
+    <text transform="translate(332 231) rotate(79)">JHALAWAR ROAD</text>
+  </g>
+  <g transform="translate(422 235)">
+    <rect x="-10" y="-10" width="110" height="29" rx="9" fill="#fcfbff" stroke="#ddd6eb"/>
+    <path d="M0 0h9v10H0zM2.5 0v-2.2h4V0" fill="none" stroke="#71638e" stroke-width="1.1"/>
+    <text x="16" y="9.5" fill="#534661" font-family="system-ui,sans-serif" font-size="12" font-weight="650">City Mall</text>
+  </g>
+  <g transform="translate(272 190)">
+    <ellipse cy="2" rx="38" ry="15" fill="#6848e6" opacity=".1"/>
+    <ellipse cy="1" rx="19" ry="7" fill="#6848e6" opacity=".2"/>
+    <path d="M0 2s-22-14.3-22-29a22 22 0 0 1 44 0C22-12.3 0 2 0 2Z" fill="#5535e4"/>
+    <path d="M-12-27s4.5-6.5 12-6.5S12-27 12-27s-4.5 6.5-12 6.5S-12-27-12-27Z" fill="none" stroke="#fff" stroke-width="1.45"/>
+    <circle cy="-27" r="2.8" fill="none" stroke="#fff" stroke-width="1.45"/>
+  </g>
+  <g transform="translate(81 185)">
+    <rect width="166" height="41" rx="9" fill="#fff" stroke="#e2dbee"/>
+    <text x="12" y="18" fill="#241a37" font-family="system-ui,sans-serif" font-size="13" font-weight="750">Vision Eye Plus</text>
+    <text x="12" y="32" fill="#695b7a" font-family="system-ui,sans-serif" font-size="10">Bagherwal Four Seasons</text>
+  </g>
+</svg>
