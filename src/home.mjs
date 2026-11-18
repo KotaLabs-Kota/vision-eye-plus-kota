@@ -1,12 +1,12 @@
-import { APPOINTMENT, BUSINESS, CATEGORIES, FIT_GUIDE, PRODUCTS, REVIEWS, SHAPES } from '../public/js/catalog.mjs';
+import { APPOINTMENT, BUSINESS, CATEGORIES, FIT_GUIDE, PRODUCTS, REVIEWS, SHAPES, categoryHref } from '../public/js/catalog.mjs';
 import { frameCard, icon } from '../public/js/components.mjs';
 import { externalAttrs, storeAddress } from './layout.mjs';
 import { reels } from './reels.mjs';
 
 const categories = [
-  { title: 'Eyeglasses', subtitle: 'Everyday frames, from quiet to bold.', image: 'category-optical', alt: 'Translucent optical glasses on lavender display plinths', link: '/shop/?type=eyeglasses', number: '01' },
-  { title: 'Sunglasses', subtitle: 'A little shade goes a long way.', image: 'category-sun', alt: 'Tortoiseshell sunglasses on a sunny yellow display', link: '/shop/?type=sunglasses', number: '02' },
-  { title: 'Eye tests', subtitle: 'Make time for clearer vision.', image: 'eye-care', alt: 'Illustration of an in-store eye test with an optometrist', link: '/eye-tests/', number: '03' },
+  { title: 'Eyeglasses', subtitle: 'Find frames for your prescription.', image: 'category-optical', alt: 'Translucent optical glasses on lavender display plinths', link: categoryHref('eyeglasses'), number: '01' },
+  { title: 'Sunglasses', subtitle: 'Compare sun frame shapes and fit.', image: 'category-sun', alt: 'Tortoiseshell sunglasses on a sunny yellow display', link: categoryHref('sunglasses'), number: '02' },
+  { title: 'Eye tests', subtitle: 'Find out what to bring to the shop.', image: 'eye-care', alt: 'Illustration of a routine in-store vision test', link: '/eye-tests/', number: '03' },
 ];
 
 function trustItem(symbol, title, description, href, extra = '') {
@@ -26,9 +26,9 @@ function hero() {
   return `<div class="wrap home-top">
     <section class="hero" aria-labelledby="home-heading">
       <div class="hero-copy">
-        <p class="eyebrow hero-eyebrow">${icon('spark')} KOTA’S EYEWEAR STUDIO</p>
-        <h1 id="home-heading">See better.<br><em>Look sharper.</em></h1>
-        <p class="hero-lead">Find frames that feel like you and get your eyes tested, right here in Kota.</p>
+        <p class="eyebrow hero-eyebrow">${icon('spark')} VISION EYE PLUS</p>
+        <h1 id="home-heading">Optical shop<br> <em>in Kota.</em></h1>
+        <p class="hero-lead">Try on eyeglasses and sunglasses opposite City Mall on Jhalawar Road. Bring your prescription or ask about an in-store eye test.</p>
         <div class="actions hero-actions">
           <a class="button button--primary" href="/shop/">Explore frames ${icon('arrow')}</a>
           <a class="button button--outline" href="${APPOINTMENT}">${icon('calendar')} Book an eye test</a>

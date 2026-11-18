@@ -1,11 +1,8 @@
-import { APPOINTMENT, BUSINESS, CONTACT_FAQS, EYE_FAQS, whatsappLink } from '../public/js/catalog.mjs';
+import { APPOINTMENT, BUSINESS, CONTACT_FAQS, EYE_FAQS, categoryHref, whatsappLink } from '../public/js/catalog.mjs';
 import { escapeHtml, icon } from '../public/js/components.mjs';
+import { aboutTrail, breadcrumbs, contactTrail, eyeTestsTrail } from './breadcrumbs.mjs';
 import { mapCard } from './home.mjs';
 import { externalAttrs, storeAddress } from './layout.mjs';
-
-function breadcrumb(label) {
-  return `<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a>${icon('chevron')}<span aria-current="page">${label}</span></nav>`;
-}
 
 function faq(questions, kicker = 'GOOD TO KNOW') {
   return `<section id="faq" class="section faq-section" aria-labelledby="faq-heading">
@@ -27,10 +24,10 @@ function contactActions() {
 
 export function eyeTests() {
   return `<div class="wrap inner-page">
-    ${breadcrumb('Eye Tests')}
+    ${breadcrumbs(eyeTestsTrail)}
     <section class="split-panel inner-hero split-panel--care" aria-labelledby="eye-title">
-      <div class="split-copy"><p class="eyebrow">${icon('eye')} EYE CARE IN KOTA</p><h1 id="eye-title">A clearer look<br class="desktop-break"> at every day.</h1>
-      <p>Ask about a routine vision test at our Kota shop. Bring your current glasses if you have them, and we can talk through your prescription, lens choices, and fit.</p>
+      <div class="split-copy"><p class="eyebrow">${icon('eye')} EYE CARE IN KOTA</p><h1 id="eye-title">Eye tests<br class="desktop-break"> in Kota.</h1>
+      <p>Ask about a routine vision test at Vision Eye Plus, opposite City Mall. Bring your current glasses if you have them, and talk through your prescription and lens options with the team.</p>
       <div class="actions"><a class="button button--primary" href="${APPOINTMENT}">Request an eye test ${icon('arrow')}</a>${contactActions()}</div></div>
       <figure class="split-image"><img src="/images/eye-care.webp" width="1040" height="698" alt="Illustration of a routine eye test in an optical practice" fetchpriority="high"><figcaption class="edit-label">ILLUSTRATIVE PHOTO</figcaption></figure>
     </section>
@@ -46,10 +43,10 @@ export function eyeTests() {
 
 export function about() {
   return `<div class="wrap inner-page">
-    ${breadcrumb('About')}
+    ${breadcrumbs(aboutTrail)}
     <section class="split-panel inner-hero split-panel--about" aria-labelledby="about-title">
-      <div class="split-copy"><p class="eyebrow">${icon('spark')} OUR KOTA SHOP</p><h1 id="about-title">Eyewear, fitted<br class="desktop-break"> in Kota.</h1>
-        <p>Vision Eye Plus is an optician and optical wholesaler on Jhalawar Road. Step in to try eyeglasses and sunglasses, talk through prescription lenses, or ask about an eye test.</p>
+      <div class="split-copy"><p class="eyebrow">${icon('spark')} OUR KOTA SHOP</p><h1 id="about-title">Your optician<br class="desktop-break"> in Kota.</h1>
+        <p>Vision Eye Plus is an optical shop and wholesaler on Jhalawar Road. Try on <a href="${categoryHref('eyeglasses')}">eyeglasses</a> and <a href="${categoryHref('sunglasses')}">sunglasses</a>, talk through prescription lenses or ask about an eye test.</p>
         <div class="actions"><a class="button button--primary" href="/contact/">Plan your visit ${icon('arrow')}</a><a class="text-link" href="${BUSINESS.maps}" ${externalAttrs}>View on Google Maps ${icon('up-right')}</a></div></div>
       <figure class="split-image store-photo"><img src="/images/kota-store.webp" width="453" height="463" alt="Interior of the Vision Eye Plus shop with eyewear displays along both walls" fetchpriority="high"><figcaption class="edit-label"><span class="edit-dot"></span> THE JHALAWAR ROAD SHOP</figcaption></figure>
     </section>
@@ -96,9 +93,9 @@ function enquiryForm() {
 
 export function contact() {
   return `<div class="wrap inner-page">
-    ${breadcrumb('Visit Us')}
+    ${breadcrumbs(contactTrail)}
     <section class="contact-hero" aria-labelledby="contact-title">
-      <div class="contact-copy"><p class="eyebrow">${icon('pin')} VISION EYE PLUS · KOTA</p><h1 id="contact-title">Come see us.</h1><p>Just across from City Mall on Jhalawar Road. Stop in to try a few frames, or get in touch before your visit.</p>
+      <div class="contact-copy"><p class="eyebrow">${icon('pin')} JHALAWAR ROAD · KOTA</p><h1 id="contact-title">Visit Vision Eye Plus.</h1><p>Find our optical shop just across from City Mall. Stop in to try frames, or call ahead to ask about eye test availability.</p>
       <div class="contact-details">${contactItems.map(([symbol, title, content]) => `<div class="contact-detail"><span class="trust-icon">${icon(symbol)}</span><div><strong>${title}</strong>${content}</div></div>`).join('')}</div>
       <div class="actions"><a class="button button--primary" href="${BUSINESS.directions}" ${externalAttrs}>Get directions ${icon('up-right')}</a><a class="button button--outline" href="${enquiryLink}" ${externalAttrs}>${icon('chat')} WhatsApp</a></div></div>
       <div class="contact-map">${mapCard()}<div class="map-link-row"><span>${BUSINESS.rating} on Google · ${BUSINESS.reviewCount} reviews</span><a class="text-link" href="${BUSINESS.maps}" ${externalAttrs}>View listing ${icon('up-right')}</a></div></div>

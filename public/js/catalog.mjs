@@ -2,8 +2,12 @@ export const BUSINESS = Object.freeze({
   name: 'Vision Eye Plus',
   address: 'Shop No. UG-05, Bagherwal Four Seasons',
   landmark: 'Opposite City Mall, Jhalawar Road',
-  cityLine: 'Kota, Rajasthan 324005',
+  city: 'Kota',
+  region: 'Rajasthan',
+  postalCode: '324005',
   hours: 'Daily, 10 am–9 pm',
+  opens: '10:00:00',
+  closes: '21:00:00',
   phone: '+919929594560',
   phoneDisplay: '+91 99295 94560',
   // Store-specific chat contact listed separately from the Google Maps phone.
@@ -91,11 +95,12 @@ export const CONTACT_FAQS = [
 ];
 
 export const EYE_FAQS = [
-  ['What should I bring?', 'Bring any current glasses and a recent prescription if you have one. It can also help to tell the team what you use your glasses for most often, such as study, screens, or driving.'],
+  ['What should I bring to an eye checkup?', 'Bring any current glasses and a recent prescription if you have one. It can also help to tell the team what you use your glasses for most often, such as study, screens, or driving.'],
   ['Is my appointment confirmed online?', 'No. This site prepares a WhatsApp request or lets you call the shop. The team confirms the time and any fees directly.'],
   ['Can I choose frames during my visit?', 'Yes, you can browse and try frames in the store. Ask which lens options suit your prescription, the cost, and how long your pair may take.'],
 ];
 
+export const categoryHref = type => `/shop/${type}/`;
 export const productHref = id => `/shop/${id}/`;
 export const productImage = id => `/images/${id}.webp`;
 export const whatsappLink = message => `https://wa.me/${BUSINESS.whatsapp}?text=${encodeURIComponent(message)}`;

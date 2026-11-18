@@ -1,14 +1,15 @@
-import { APPOINTMENT, BUSINESS, CATALOGUE_FILTERS, CATEGORIES, COLORS, MATERIALS, PRODUCTS, SHAPES, productImage, whatsappLink } from '../public/js/catalog.mjs';
+import { APPOINTMENT, BUSINESS, CATALOGUE_FILTERS, CATEGORIES, COLORS, MATERIALS, PRODUCTS, SHAPES, categoryHref, productImage, whatsappLink } from '../public/js/catalog.mjs';
 import { escapeHtml, frameCard, icon } from '../public/js/components.mjs';
+import { breadcrumbs, productTrail, shopTrail } from './breadcrumbs.mjs';
 import { externalAttrs } from './layout.mjs';
 
 const selectOptions = (options, first) => `${first ? `<option value="">${first}</option>` : ''}${Object.entries(options).map(([value, label]) => `<option value="${value}">${label}</option>`).join('')}`;
 
 export function shop() {
   return `<div class="wrap inner-page">
-    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a>${icon('chevron')}<span aria-current="page">Collection</span></nav>
+    ${breadcrumbs(shopTrail)}
     <section class="page-banner shop-banner" aria-labelledby="shop-title">
-      <div><p class="eyebrow">THE FRAME EDIT</p><h1 id="shop-title">Find your next pair.</h1><p>Browse eyeglasses and sunglasses by shape, material, and colour. Save the styles you’d like to try on in Kota.</p></div>
+      <div><p class="eyebrow">THE FRAME EDIT</p><h1 id="shop-title">Browse eyewear styles.</h1><p>Filter our frame ideas by shape, material and colour, or explore <a href="${categoryHref('eyeglasses')}">eyeglasses</a> and <a href="${categoryHref('sunglasses')}">sunglasses</a> for your next try-on in Kota.</p></div>
       <span class="banner-motif" aria-hidden="true">${icon('mark')}</span>
       <span class="banner-index">01—06 <span>FRAME PREVIEWS</span></span>
     </section>
@@ -55,7 +56,7 @@ export function product(frame) {
   const primary = COLORS[frame.colors[0]].name;
   const initialMessage = `Hi Vision Eye Plus! I’m interested in a frame like ${frame.name} (${CATEGORIES[frame.type]}). Could you share similar styles and prices?`;
   return `<div class="wrap inner-page product-page" data-product="${frame.id}">
-    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a>${icon('chevron')}<a href="/shop/?type=${frame.type}">${CATEGORIES[frame.type]}</a>${icon('chevron')}<span aria-current="page">${frame.name}</span></nav>
+    ${breadcrumbs(productTrail(frame))}
     <section class="product-layout" aria-labelledby="product-title">
       <div class="product-visual">
         <figure class="product-image" data-product-image data-view="full">

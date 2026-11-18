@@ -1,6 +1,6 @@
 import {
   CATALOGUE_FILTERS, CATEGORIES, COLORS, FIT_GUIDE, PRODUCTS, REVIEWS, SHAPES,
-  filterFrames, parseFilters, productHref, productImage, whatsappLink,
+  categoryHref, filterFrames, parseFilters, productHref, productImage, whatsappLink,
 } from './catalog.mjs';
 import { escapeHtml, frameCard, icon } from './components.mjs';
 import { contactMessage, productMessage, todayInKota } from './enquiries.mjs';
@@ -90,8 +90,8 @@ window.addEventListener('storage', event => {
 });
 
 const quickSearch = [
-  { title: 'Eyeglasses', desc: 'Explore everyday frames', href: '/shop/?type=eyeglasses', icon: 'glasses', terms: 'eyeglasses eyewear glasses prescription frames optical spectacles' },
-  { title: 'Sunglasses', desc: 'Explore sun frames', href: '/shop/?type=sunglasses', icon: 'sun', terms: 'sunglasses sun shades' },
+  { title: 'Eyeglasses', desc: 'Explore everyday frames', href: categoryHref('eyeglasses'), icon: 'glasses', terms: 'eyeglasses eyewear glasses prescription frames optical spectacles' },
+  { title: 'Sunglasses', desc: 'Explore sun frames', href: categoryHref('sunglasses'), icon: 'sun', terms: 'sunglasses sun shades' },
   { title: 'In-store eye tests', desc: 'What to expect in Kota', href: '/eye-tests/', icon: 'eye', terms: 'eye tests testing optometrist prescription exam vision check' },
   { title: 'Visit the shop', desc: 'Address, hours and directions', href: '/contact/', icon: 'pin', terms: 'visit shop store contact directions hours location phone kota jhalawar city mall wholesale' },
 ];
@@ -262,10 +262,6 @@ function setupCatalogue() {
     tagList.hidden = !active.length;
     filterIconCount.textContent = active.length;
     filterIconCount.hidden = !active.length;
-    for (const link of $$('[data-nav="eyeglasses"], [data-nav="sunglasses"]')) {
-      if (filters.type === link.dataset.nav) link.setAttribute('aria-current', 'page');
-      else link.removeAttribute('aria-current');
-    }
     syncSavedButtons();
   }
 
