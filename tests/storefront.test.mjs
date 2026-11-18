@@ -4,6 +4,7 @@ import { access } from 'node:fs/promises';
 import { BUSINESS, PRODUCTS, CATEGORIES, SHAPES, MATERIALS, COLORS, filterFrames, parseFilters, productHref, productImage, whatsappLink } from '../public/js/catalog.mjs';
 import { contactMessage, formatPreferredDay, productMessage, todayInKota } from '../public/js/enquiries.mjs';
 import { home } from '../src/home.mjs';
+import { layout } from '../src/layout.mjs';
 import { product, shop } from '../src/catalogue.mjs';
 import { contact } from '../src/visit.mjs';
 import { escapeHtml } from '../public/js/components.mjs';
@@ -65,4 +66,12 @@ test('static templates expose working contact details and do not advertise live 
   assert.match(contact(), /tel:\+919929594560/);
   assert.match(shop(), /not live inventory/i);
   assert.match(product(PRODUCTS[0]), /not a live product listing/i);
+});
+
+test('the shared footer credits KotaLabs and links to the studio website', () => {
+  const html = layout({ title: 'Vision Eye Plus', description: 'Storefront', page: 'home', content: '' });
+  const footer = html.match(/<footer\b[\s\S]*?<\/footer>/)?.[0] || '';
+  assert.match(footer, /Designed &amp; engineered by[\s\S]*?<strong>KotaLabs<\/strong>/);
+  assert.match(footer, /href="https:\/\/kotalabs\.in\/" target="_blank" rel="noopener noreferrer">Explore KotaLabs/);
+  assert.match(footer, /Explore KotaLabs[\s\S]*?© \d{4} Vision Eye Plus, Kota\./);
 });

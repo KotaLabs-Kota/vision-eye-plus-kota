@@ -2,6 +2,7 @@ import { APPOINTMENT, BUSINESS, whatsappLink } from '../public/js/catalog.mjs';
 import { escapeHtml, icon } from '../public/js/components.mjs';
 
 export const externalAttrs = 'target="_blank" rel="noopener noreferrer"';
+const studioUrl = 'https://kotalabs.in/';
 const nav = [
   ['home', '/', 'Home'], ['eyeglasses', '/shop/?type=eyeglasses', 'Eyeglasses'],
   ['sunglasses', '/shop/?type=sunglasses', 'Sunglasses'], ['eye-tests', '/eye-tests/', 'Eye Tests'], ['contact', '/contact/', 'Visit Us'],
@@ -44,7 +45,15 @@ function footer() {
       <div class="footer-links"><h2>The studio</h2><a href="/eye-tests/">Eye tests</a><a href="/about/">About us</a><a href="/contact/">Visit us</a><a href="/contact/#faq">FAQs</a></div>
       <div class="footer-links footer-location"><h2>Find us in Kota</h2>${storeAddress()}<a href="tel:${BUSINESS.phone}">${BUSINESS.phoneDisplay}</a><a class="footer-map" href="${BUSINESS.directions}" ${externalAttrs}>Get directions ${icon('up-right')}</a></div>
     </div>
-    <div class="wrap footer-bottom"><span>© ${new Date().getUTCFullYear()} Vision Eye Plus, Kota.</span><a href="https://kotalabs.in/" ${externalAttrs}>Designed &amp; built by KotaLabs ${icon('up-right')}</a></div>
+    <div class="wrap kotalabs-credit">
+      <span class="credit-mark" aria-hidden="true">K<span>L</span></span>
+      <div class="credit-copy">
+        <p class="credit-kicker"><span class="credit-dot" aria-hidden="true"></span>Designed &amp; engineered by</p>
+        <p class="credit-identity"><strong>KotaLabs</strong><span class="credit-detail">Next-gen 3D web, AR experiences &amp; digital flagships</span></p>
+      </div>
+      <a class="button credit-cta" href="${studioUrl}" ${externalAttrs}>Explore KotaLabs ${icon('arrow')}</a>
+    </div>
+    <div class="wrap footer-bottom"><span>© ${new Date().getUTCFullYear()} Vision Eye Plus, Kota.</span><a href="${studioUrl}" ${externalAttrs}>Crafted by KotaLabs ${icon('up-right')}</a></div>
   </footer>`;
 }
 
