@@ -8,6 +8,7 @@ export const BUSINESS = Object.freeze({
   phoneDisplay: '+91 99295 94560',
   // Store-specific chat contact listed separately from the Google Maps phone.
   whatsapp: '917014063286',
+  instagramHandle: 'vision_eye_plus_kota',
   maps: 'https://www.google.com/maps?cid=6663549362734050113',
   directions: 'https://www.google.com/maps/dir/?api=1&destination=25.136439%2C75.8541896',
   latitude: 25.136439,

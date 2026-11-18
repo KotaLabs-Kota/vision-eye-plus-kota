@@ -27,6 +27,7 @@ function header(active) {
         ${brand()}
         <nav class="desktop-nav" aria-label="Main navigation">${navLinks(active)}</nav>
         <div class="header-actions">
+          <a class="tool-button" href="https://www.instagram.com/${BUSINESS.instagramHandle}/" ${externalAttrs} aria-label="Vision Eye Plus on Instagram (@${BUSINESS.instagramHandle})" title="@${BUSINESS.instagramHandle}">${icon('instagram')}</a>
           <button class="tool-button" type="button" aria-label="Search" aria-haspopup="dialog" data-open="search" data-js>${icon('search')}</button>
           <button class="tool-button wish-trigger" type="button" aria-label="Saved frames" aria-haspopup="dialog" data-open="wishlist" data-js>${icon('heart')}<span class="wish-count" data-wish-count hidden>0</span></button>
           <a class="button button--outline button--header" href="${APPOINTMENT}">Book an eye test</a>
