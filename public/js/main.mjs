@@ -1,6 +1,6 @@
 import {
-  CATALOGUE_FILTERS, CATEGORIES, COLORS, FIT_GUIDE, PRODUCTS, REVIEWS, SHAPES,
-  categoryHref, filterFrames, parseFilters, productHref, productImage, whatsappLink,
+  CATALOGUE_FILTERS, CATEGORIES, FIT_GUIDE, PRODUCTS, REVIEWS, SHAPES,
+  categoryHref, filterFrames, parseFilters, productHref, productImage, productPreview, whatsappLink,
 } from './catalog.mjs';
 import { escapeHtml, frameCard, icon } from './components.mjs';
 import { contactMessage, productMessage, todayInKota } from './enquiries.mjs';
@@ -314,22 +314,33 @@ function setupProduct() {
   if (!frame) return;
   const options = $('[data-product-options]', product);
   const enquiry = $('[data-product-enquire]', product);
+  const gallery = $('[data-product-image]', product);
+  const image = $('img', gallery);
+  const colorLabel = $('[data-color-name]', product);
+  const previewLabel = $('[data-preview-color]', product);
   const views = $$('[data-gallery]', product);
+  const link = new URL(productHref(frame.id), location.origin).href;
   for (const view of views) {
     view.addEventListener('click', () => {
       views.forEach(button => button.setAttribute('aria-pressed', String(button === view)));
-      $('[data-product-image]', product).dataset.view = view.dataset.gallery;
+      gallery.dataset.view = view.dataset.gallery;
     });
   }
-  function updateMessage() {
+  function updateSelection() {
     const values = Object.fromEntries(new FormData(options));
-    $('[data-color-name]', product).textContent = `– ${COLORS[values.color]?.name || COLORS[frame.colors[0]].name}`;
-    const link = new URL(productHref(frame.id), location.origin).href;
-    enquiry.href = whatsappLink(productMessage(frame, values, link));
+    const preview = productPreview(frame, values.color);
+    if (image.getAttribute('src') !== preview.src) {
+      image.src = preview.src;
+      image.alt = preview.alt;
+      colorLabel.textContent = `– ${preview.name}`;
+      previewLabel.textContent = preview.name;
+    }
+    enquiry.href = whatsappLink(productMessage(frame, { ...values, color: preview.color }, link));
   }
-  options.addEventListener('change', updateMessage);
+  options.addEventListener('change', updateSelection);
   options.addEventListener('submit', event => event.preventDefault());
-  updateMessage();
+  window.addEventListener('pageshow', updateSelection);
+  updateSelection();
 }
 
 function setupEnquiryForm() {
