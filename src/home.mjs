@@ -1,6 +1,7 @@
 import { APPOINTMENT, BUSINESS, CATEGORIES, FIT_GUIDE, PRODUCTS, REVIEWS, SHAPES } from '../public/js/catalog.mjs';
 import { frameCard, icon } from '../public/js/components.mjs';
 import { externalAttrs, storeAddress } from './layout.mjs';
+import { reels } from './reels.mjs';
 
 const categories = [
   { title: 'Eyeglasses', subtitle: 'Everyday frames, from quiet to bold.', image: 'category-optical', alt: 'Translucent optical glasses on lavender display plinths', link: '/shop/?type=eyeglasses', number: '01' },
@@ -121,5 +122,5 @@ function visit() {
 }
 
 export function home() {
-  return hero() + categorySection() + featured() + eyeCare() + fitFinder() + googleReviews() + visit();
+  return hero() + categorySection() + featured() + eyeCare() + fitFinder() + googleReviews() + visit() + reels();
 }

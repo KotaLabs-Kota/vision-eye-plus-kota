@@ -68,6 +68,14 @@ test('static templates expose working contact details and do not advertise live 
   assert.match(product(PRODUCTS[0]), /not a live product listing/i);
 });
 
+test('the shared header places the Instagram profile link immediately before Search', () => {
+  const html = layout({ title: 'Vision Eye Plus', description: 'Storefront', page: 'home', content: '' });
+  const instagram = html.match(/<a\b[^>]*href="https:\/\/www\.instagram\.com\/vision_eye_plus_kota\/"[^>]*>[\s\S]*?<\/a>\s*<button\b[^>]*aria-label="Search"/);
+  assert.ok(instagram);
+  assert.match(instagram[0], /target="_blank" rel="noopener noreferrer"/);
+  assert.match(instagram[0], /icons\.svg#instagram/);
+});
+
 test('the shared footer credits KotaLabs and links to the studio website', () => {
   const html = layout({ title: 'Vision Eye Plus', description: 'Storefront', page: 'home', content: '' });
   const footer = html.match(/<footer\b[\s\S]*?<\/footer>/)?.[0] || '';

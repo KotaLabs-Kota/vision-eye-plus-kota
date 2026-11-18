@@ -4,6 +4,7 @@ import {
 } from './catalog.mjs';
 import { escapeHtml, frameCard, icon } from './components.mjs';
 import { contactMessage, productMessage, todayInKota } from './enquiries.mjs';
+import { setupReels } from './reels.mjs';
 
 const $ = (selector, parent = document) => parent.querySelector(selector);
 const $$ = (selector, parent = document) => [...parent.querySelectorAll(selector)];
@@ -381,6 +382,7 @@ setupDialogs();
 setupFeatured();
 setupFitGuide();
 setupReviews();
+setupReels($('[data-reels]'));
 setupCatalogue();
 setupProduct();
 setupEnquiryForm();

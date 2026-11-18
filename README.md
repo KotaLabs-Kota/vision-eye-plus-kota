@@ -14,7 +14,7 @@ Use Node 20 or later. There are no runtime dependencies, accounts, API keys, or 
 
 ## Pages and behaviour
 
-- `/` — collection shortcuts, featured frame styles, an interactive fit guide, eye tests, Google review excerpts, and the store location.
+- `/` — collection shortcuts, featured frame styles, an interactive fit guide, eye tests, Google review excerpts, the store location, and a four-reel carousel with an Instagram profile link.
 - `/shop/` — six frame previews; search, sorting, and shareable collection, shape, material, and colour filters.
 - `/shop/<style>/` — full-width and detail crop views, colour/fit/lens preferences, save button, and a prefilled WhatsApp enquiry.
 - `/eye-tests/` and `/about/` — what to expect at an eye test and what the shop offers.
@@ -41,5 +41,6 @@ Search and the saved-frames drawer are available from the header. The shortlist 
 - `public/js/catalog.mjs`: store details, frame styles, FAQs, excerpts, and fit-guide recommendations. Frame imagery and options are examples, **not live inventory**; swap in approved product photos, stock, and prices when available.
 - `public/js/main.mjs` and `enquiries.mjs`: storefront interactions and WhatsApp message preparation.
 - `src/`: shared page layout and page templates; `public/css/styles.css` defines the design system.
-- `public/images/`: generated campaign, eye-test, and example frame imagery; `kota-store.webp` is a crop of the shop interior in the supplied Google listing screenshot. Verify usage rights or replace it with a store-owned photo before publishing.
+- `public/video 1.mp4` through `public/video 4.mp4`: the shop’s four original reels. `src/reels.mjs` sets their order, titles and posters. Playback starts muted only when the selected reel comes into view; autoplay is skipped for reduced motion or data saver.
+- `public/images/`: generated campaign, eye-test, and example frame imagery; the reel posters are stills from the uploaded videos. `kota-store.webp` is a crop of the shop interior in the supplied Google listing screenshot. Verify usage rights or replace it with a store-owned photo before publishing.
 - DM Serif Display and Plus Jakarta Sans are self-hosted; their OFL licenses are in `public/assets/fonts/`.
