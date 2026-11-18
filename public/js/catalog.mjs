@@ -14,6 +14,8 @@ export const BUSINESS = Object.freeze({
   longitude: 75.8541896,
   rating: '4.9',
   reviewCount: 239,
+  instagram: 'https://www.instagram.com/vision_eye_plus_kota/',
+  instagramHandle: '@vision_eye_plus_kota',
 });
 
 export const APPOINTMENT = '/contact/?topic=eye-test#enquiry';
