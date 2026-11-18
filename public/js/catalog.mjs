@@ -2,8 +2,12 @@ export const BUSINESS = Object.freeze({
   name: 'Vision Eye Plus',
   address: 'Shop No. UG-05, Bagherwal Four Seasons',
   landmark: 'Opposite City Mall, Jhalawar Road',
-  cityLine: 'Kota, Rajasthan 324005',
+  city: 'Kota',
+  region: 'Rajasthan',
+  postalCode: '324005',
   hours: 'Daily, 10 am–9 pm',
+  opens: '10:00:00',
+  closes: '21:00:00',
   phone: '+919929594560',
   phoneDisplay: '+91 99295 94560',
   // Store-specific chat contact listed separately from the Google Maps phone.
@@ -41,22 +45,22 @@ export const PRODUCTS = [
   {
     id: 'regent', name: 'The Regent', type: 'eyeglasses', shape: 'square', material: 'acetate', colors: ['black', 'tortoise', 'clear'],
     alt: 'Glossy black acetate eyeglasses with softly square rims',
-    description: 'A softly squared silhouette with a confident, thicker rim. A good reference if you like the look of classic black frames but want a little more character at the bridge.',
+    description: 'A softly squared silhouette with a confident, thicker rim. A good reference if you like a classic frame with a little more character at the bridge.',
   },
   {
     id: 'boulevard', name: 'The Boulevard', type: 'eyeglasses', shape: 'round', material: 'metal', colors: ['gold', 'silver', 'black'],
     alt: 'Fine champagne-gold metal eyeglasses with round rims',
-    description: 'Fine metal rims, a rounded profile and a quiet champagne finish. A lighter-looking frame for anyone who wants their glasses to do a little less talking.',
+    description: 'Fine metal rims and a rounded profile. A lighter-looking frame for anyone who wants their glasses to do a little less talking.',
   },
   {
     id: 'solstice', name: 'The Solstice', type: 'sunglasses', shape: 'cat-eye', material: 'acetate', colors: ['tortoise', 'black'],
     alt: 'Tortoiseshell cat-eye sunglasses with dark brown lenses',
-    description: 'An upswept outer corner and a warm tortoiseshell pattern. Bring this reference if you want a bold sun frame without a dramatically pointed cat-eye shape.',
+    description: 'An upswept outer corner with a softly rounded lower rim. Bring this reference if you want a bold sun frame without a dramatically pointed cat-eye shape.',
   },
   {
     id: 'arcade', name: 'The Arcade', type: 'eyeglasses', shape: 'rectangle', material: 'acetate', colors: ['lilac', 'clear', 'black'],
     alt: 'Translucent lilac rectangular acetate eyeglasses',
-    description: 'Clean rectangular lines meet a translucent lilac finish. A playful alternative to darker acetate with enough structure to work as an everyday pair.',
+    description: 'Clean rectangular lines and a substantial acetate rim. Compare a translucent finish with a bolder, darker frame for everyday wear.',
   },
   {
     id: 'meridian', name: 'The Meridian', type: 'eyeglasses', shape: 'rectangle', material: 'metal', colors: ['gunmetal', 'silver'],
@@ -91,13 +95,26 @@ export const CONTACT_FAQS = [
 ];
 
 export const EYE_FAQS = [
-  ['What should I bring?', 'Bring any current glasses and a recent prescription if you have one. It can also help to tell the team what you use your glasses for most often, such as study, screens, or driving.'],
+  ['What should I bring to an eye checkup?', 'Bring any current glasses and a recent prescription if you have one. It can also help to tell the team what you use your glasses for most often, such as study, screens, or driving.'],
   ['Is my appointment confirmed online?', 'No. This site prepares a WhatsApp request or lets you call the shop. The team confirms the time and any fees directly.'],
   ['Can I choose frames during my visit?', 'Yes, you can browse and try frames in the store. Ask which lens options suit your prescription, the cost, and how long your pair may take.'],
 ];
 
+export const categoryHref = type => `/shop/${type}/`;
 export const productHref = id => `/shop/${id}/`;
 export const productImage = id => `/images/${id}.webp`;
+export function productPreview(frame, requestedColor) {
+  const primary = frame.colors[0];
+  const color = frame.colors.includes(requestedColor) ? requestedColor : primary;
+  const name = COLORS[color].name;
+  return {
+    color,
+    name,
+    src: color === primary ? productImage(frame.id) : `/images/variants/${frame.id}-${color}.webp`,
+    alt: color === primary ? frame.alt : `${frame.name} ${CATEGORIES[frame.type].toLowerCase()} in ${name}`,
+  };
+}
+
 export const whatsappLink = message => `https://wa.me/${BUSINESS.whatsapp}?text=${encodeURIComponent(message)}`;
 
 export const CATALOGUE_FILTERS = {

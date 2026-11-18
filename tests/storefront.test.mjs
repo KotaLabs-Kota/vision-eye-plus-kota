@@ -1,7 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { access } from 'node:fs/promises';
-import { BUSINESS, PRODUCTS, CATEGORIES, SHAPES, MATERIALS, COLORS, filterFrames, parseFilters, productHref, productImage, whatsappLink } from '../public/js/catalog.mjs';
+import { createHash } from 'node:crypto';
+import { access, readFile } from 'node:fs/promises';
+import { BUSINESS, PRODUCTS, CATEGORIES, SHAPES, MATERIALS, COLORS, filterFrames, parseFilters, productHref, productImage, productPreview, whatsappLink } from '../public/js/catalog.mjs';
 import { contactMessage, formatPreferredDay, productMessage, todayInKota } from '../public/js/enquiries.mjs';
 import { home } from '../src/home.mjs';
 import { layout } from '../src/layout.mjs';
@@ -20,6 +21,36 @@ test('the catalogue has unique slugs and valid style metadata and image assets',
     assert.ok(frame.colors.length && frame.colors.every(key => COLORS[key]));
     assert.equal(productHref(frame.id), `/shop/${frame.id}/`);
     await access(new URL(`../public${productImage(frame.id)}`, import.meta.url));
+  }
+});
+
+test('every selectable colour links to its own WebP frame preview', async () => {
+  for (const frame of PRODUCTS) {
+    const previews = frame.colors.map(color => productPreview(frame, color));
+    const hashes = new Set();
+    for (const [index, preview] of previews.entries()) {
+      const color = frame.colors[index];
+      assert.equal(preview.color, color);
+      assert.equal(preview.name, COLORS[color].name);
+      if (index) assert.ok(preview.alt.includes(preview.name));
+      const image = await readFile(new URL(`../public${preview.src}`, import.meta.url));
+      assert.equal(image.toString('ascii', 8, 12), 'WEBP', preview.src);
+      hashes.add(createHash('sha256').update(image).digest('hex'));
+    }
+    assert.equal(new Set(previews.map(({ src }) => src)).size, frame.colors.length, frame.id);
+    assert.equal(hashes.size, frame.colors.length, frame.id);
+    assert.equal(previews[0].src, productImage(frame.id));
+    assert.deepEqual(productPreview(frame, 'constructor'), previews[0]);
+  }
+});
+
+test('the initial frame preview, caption and checked swatch agree without JavaScript', () => {
+  for (const frame of PRODUCTS) {
+    const preview = productPreview(frame);
+    const html = product(frame);
+    assert.ok(html.includes(`<img src="${preview.src}" width="900" height="900" alt="${escapeHtml(preview.alt)}"`));
+    assert.ok(html.includes(`name="color" value="${preview.color}" checked`));
+    assert.ok(html.includes(`<span data-preview-color>${preview.name}</span>. Illustrative colour preview.`));
   }
 });
 

@@ -1,14 +1,15 @@
-import { APPOINTMENT, BUSINESS, CATALOGUE_FILTERS, CATEGORIES, COLORS, MATERIALS, PRODUCTS, SHAPES, productImage, whatsappLink } from '../public/js/catalog.mjs';
+import { APPOINTMENT, BUSINESS, CATALOGUE_FILTERS, CATEGORIES, COLORS, MATERIALS, PRODUCTS, SHAPES, categoryHref, productPreview, whatsappLink } from '../public/js/catalog.mjs';
 import { escapeHtml, frameCard, icon } from '../public/js/components.mjs';
+import { breadcrumbs, productTrail, shopTrail } from './breadcrumbs.mjs';
 import { externalAttrs } from './layout.mjs';
 
 const selectOptions = (options, first) => `${first ? `<option value="">${first}</option>` : ''}${Object.entries(options).map(([value, label]) => `<option value="${value}">${label}</option>`).join('')}`;
 
 export function shop() {
   return `<div class="wrap inner-page">
-    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a>${icon('chevron')}<span aria-current="page">Collection</span></nav>
+    ${breadcrumbs(shopTrail)}
     <section class="page-banner shop-banner" aria-labelledby="shop-title">
-      <div><p class="eyebrow">THE FRAME EDIT</p><h1 id="shop-title">Find your next pair.</h1><p>Browse eyeglasses and sunglasses by shape, material, and colour. Save the styles you’d like to try on in Kota.</p></div>
+      <div><p class="eyebrow">THE FRAME EDIT</p><h1 id="shop-title">Browse eyewear styles.</h1><p>Filter our frame ideas by shape, material and colour, or explore <a href="${categoryHref('eyeglasses')}">eyeglasses</a> and <a href="${categoryHref('sunglasses')}">sunglasses</a> for your next try-on in Kota.</p></div>
       <span class="banner-motif" aria-hidden="true">${icon('mark')}</span>
       <span class="banner-index">01—06 <span>FRAME PREVIEWS</span></span>
     </section>
@@ -52,26 +53,26 @@ function getRelated(frame) {
 }
 
 export function product(frame) {
-  const primary = COLORS[frame.colors[0]].name;
+  const preview = productPreview(frame);
   const initialMessage = `Hi Vision Eye Plus! I’m interested in a frame like ${frame.name} (${CATEGORIES[frame.type]}). Could you share similar styles and prices?`;
   return `<div class="wrap inner-page product-page" data-product="${frame.id}">
-    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a>${icon('chevron')}<a href="/shop/?type=${frame.type}">${CATEGORIES[frame.type]}</a>${icon('chevron')}<span aria-current="page">${frame.name}</span></nav>
+    ${breadcrumbs(productTrail(frame))}
     <section class="product-layout" aria-labelledby="product-title">
       <div class="product-visual">
         <figure class="product-image" data-product-image data-view="full">
-          <img src="${productImage(frame.id)}" width="900" height="900" alt="${frame.alt}" fetchpriority="high"><span class="frame-tag">STYLE PREVIEW</span>
+          <img src="${escapeHtml(preview.src)}" width="900" height="900" alt="${escapeHtml(preview.alt)}" fetchpriority="high"><span class="frame-tag">STYLE PREVIEW</span>
         </figure>
         <div class="product-views" role="group" aria-label="Image view" data-js>
           <button class="button button--outline" type="button" data-gallery="full" aria-pressed="true">${icon('glasses')} Full frame</button>
           <button class="button button--outline" type="button" data-gallery="detail" aria-pressed="false">${icon('expand')} Detail crop</button>
         </div>
-        <p class="product-caption">Example shown in ${primary}. Images are illustrative.</p>
+        <p class="product-caption">Shown in <span data-preview-color>${escapeHtml(preview.name)}</span>. Illustrative colour preview.</p>
       </div>
       <div class="product-info">
         <p class="eyebrow">${CATEGORIES[frame.type]} / THE FRAME EDIT</p><h1 id="product-title">${frame.name}</h1>
         <p class="product-meta">${SHAPES[frame.shape]} · ${MATERIALS[frame.material]}</p><p class="product-description">${frame.description}</p>
         <form class="product-options" data-product-options data-js>
-          <fieldset><legend>Colour preference <span class="choice-name" data-color-name>– ${primary}</span></legend><div class="colour-options">
+          <fieldset><legend>Colour preference <span class="choice-name" data-color-name>– ${escapeHtml(preview.name)}</span></legend><div class="colour-options">
             ${frame.colors.map((key, index) => `<label class="colour-choice" title="${COLORS[key].name}"><input type="radio" name="color" value="${key}" ${index === 0 ? 'checked' : ''}><span class="swatch" style="--swatch:${COLORS[key].hex}"></span><span class="visually-hidden">${COLORS[key].name}</span></label>`).join('')}
           </div></fieldset>
           <fieldset><legend>Fit preference</legend><div class="fit-options">

@@ -16,7 +16,8 @@ Use Node 20 or later. There are no runtime dependencies, accounts, API keys, or 
 
 - `/` — collection shortcuts, featured frame styles, an interactive fit guide, eye tests, Google review excerpts, the store location, and a four-reel carousel with an Instagram profile link.
 - `/shop/` — six frame previews; search, sorting, and shareable collection, shape, material, and colour filters.
-- `/shop/<style>/` — full-width and detail crop views, colour/fit/lens preferences, save button, and a prefilled WhatsApp enquiry.
+- `/shop/eyeglasses/` and `/shop/sunglasses/` — browse each collection and get tips for choosing frames and lenses in store, with or without JavaScript.
+- `/shop/<style>/` — full-frame and detail crop views, selectable colour previews, fit and lens preferences, a save button, and a prefilled WhatsApp enquiry with the selected colour.
 - `/eye-tests/` and `/about/` — what to expect at an eye test and what the shop offers.
 - `/contact/` — store details, a schematic map, phone and directions, FAQs, and an enquiry form with an eye-test option.
 
@@ -36,11 +37,23 @@ Search and the saved-frames drawer are available from the header. The shortlist 
 - [Mappls](https://www.mappls.com/c7o2y1) and [Yappe](https://yappe.in/rajasthan/kota/vision-eye-plus/1393550) corroborate the primary phone and hours.
 - [WearMySpex](https://www.wearmyspex.com/stores/kota-jhalawar-road-vision-eye-plus-rajib-nagar) lists eye testing and publishes a separate, store-specific WhatsApp chat number. Its directory hours differ, so the site uses the current Google Maps hours corroborated above. Confirm the chat number with the store before a public launch.
 
+## Launching on your domain and Google
+
+1. **Connect the domain in Vercel.** Add it in the project’s **Settings → Domains** and enter the DNS records Vercel shows at your registrar. Pick one primary HTTPS hostname (with or without `www`) and redirect the other to it. See [Vercel’s domain setup guide](https://vercel.com/docs/domains/set-up-custom-domain).
+2. **Enable production indexing.** In **Settings → Environment Variables**, set `SITE_URL` to the exact primary HTTPS origin, such as `https://www.example.com` (example only; use your domain). Set it for **Production only** and redeploy the merged site. Leave Vercel’s system environment variables exposed so the build can also recognize preview deployments. On the live domain, open `/robots.txt` and confirm it lists `/sitemap.xml` on that domain. The sitemap and canonical tags should all use the same HTTPS hostname. Check the homepage source for `index, follow` rather than `noindex`, and make sure the response does not have an `X-Robots-Tag: noindex` header.
+3. **Submit the site to Google.** In [Search Console](https://search.google.com/search-console/), add a [Domain property and verify it through DNS](https://support.google.com/webmasters/answer/9008080). Submit `/sitemap.xml` under **Sitemaps**. Use [URL Inspection](https://support.google.com/webmasters/answer/9012289) to test the homepage, eyeglasses, sunglasses, eye tests, and visit pages. You can request indexing for the main pages after the live tests pass. Use the **Page indexing** and **Performance** reports to review coverage, impressions, and queries over time.
+4. **Update the existing Maps listing.** Claim or verify the [Vision Eye Plus Google Business Profile](https://www.google.com/maps?cid=6663549362734050113) if needed, rather than creating a second listing. Set the new primary URL as its website. Confirm the shop name, category, pin, address, phone, opening and holiday hours, and eye test availability against the site. Add current shop photos you own, invite honest customer reviews, and reply to them. Confirm the WhatsApp number and photo rights before publishing.
+
+The build writes one sitemap for the seven real landing pages. Catalogue filters and search parameters still work but use the clean `/shop/` URL as their canonical. Enquiry and tracking parameters use their corresponding clean page. The six illustrative frame details and 404 are not in the sitemap and have `noindex`; the frame details are still browseable and shareable. The build uses the real store details in `Optician` structured data and does not mark up the example frames as products for sale or add review stars. You can check the production homepage and contact page with Google’s [Rich Results Test](https://search.google.com/test/rich-results).
+
+**Before the domain is set:** local builds without `SITE_URL` and non-production Vercel builds emit `noindex` and no sitemap or canonical URLs. `robots.txt` allows crawlers to read the HTML directives; it is not a privacy control. For a local check of the production output, run `SITE_URL=https://www.example.com npm run build` with an example hostname that you do not deploy. Technical SEO helps people and search engines find the right pages; [Google does not guarantee indexing or a specific rank](https://developers.google.com/search/docs/fundamentals/how-search-works). Local Maps visibility also depends on [relevance, distance, and prominence](https://support.google.com/business/answer/7091).
+
 ## Updating the site
 
 - `public/js/catalog.mjs`: store details, frame styles, FAQs, excerpts, and fit-guide recommendations. Frame imagery and options are examples, **not live inventory**; swap in approved product photos, stock, and prices when available.
 - `public/js/main.mjs` and `enquiries.mjs`: storefront interactions and WhatsApp message preparation.
 - `src/`: shared page layout and page templates; `public/css/styles.css` defines the design system.
 - `public/video 1.mp4` through `public/video 4.mp4`: the shop’s four original reels. `src/reels.mjs` sets their order, titles and posters. Playback starts muted only when the selected reel comes into view; autoplay is skipped for reduced motion or data saver.
-- `public/images/`: generated campaign, eye-test, and example frame imagery; the reel posters are stills from the uploaded videos. `kota-store.webp` is a crop of the shop interior in the supplied Google listing screenshot. Verify usage rights or replace it with a store-owned photo before publishing.
+- `public/images/`: generated campaign, eye-test, and example frame imagery. Non-default colour swatches use recoloured examples in `public/images/variants/<frame>-<colour>.webp`, not photos of live stock. Add a matching 900 × 900 WebP when adding a colour swatch. The first colour uses `public/images/<frame>.webp`.
+- The reel posters are stills from the uploaded videos. `public/images/kota-store.webp` is a crop of the shop interior in the supplied Google listing screenshot. Verify usage rights or replace it with a store-owned photo before publishing.
 - DM Serif Display and Plus Jakarta Sans are self-hosted; their OFL licenses are in `public/assets/fonts/`.

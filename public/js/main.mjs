@@ -1,6 +1,6 @@
 import {
-  CATALOGUE_FILTERS, CATEGORIES, COLORS, FIT_GUIDE, PRODUCTS, REVIEWS, SHAPES,
-  filterFrames, parseFilters, productHref, productImage, whatsappLink,
+  CATALOGUE_FILTERS, CATEGORIES, FIT_GUIDE, PRODUCTS, REVIEWS, SHAPES,
+  categoryHref, filterFrames, parseFilters, productHref, productImage, productPreview, whatsappLink,
 } from './catalog.mjs';
 import { escapeHtml, frameCard, icon } from './components.mjs';
 import { contactMessage, productMessage, todayInKota } from './enquiries.mjs';
@@ -90,8 +90,8 @@ window.addEventListener('storage', event => {
 });
 
 const quickSearch = [
-  { title: 'Eyeglasses', desc: 'Explore everyday frames', href: '/shop/?type=eyeglasses', icon: 'glasses', terms: 'eyeglasses eyewear glasses prescription frames optical spectacles' },
-  { title: 'Sunglasses', desc: 'Explore sun frames', href: '/shop/?type=sunglasses', icon: 'sun', terms: 'sunglasses sun shades' },
+  { title: 'Eyeglasses', desc: 'Explore everyday frames', href: categoryHref('eyeglasses'), icon: 'glasses', terms: 'eyeglasses eyewear glasses prescription frames optical spectacles' },
+  { title: 'Sunglasses', desc: 'Explore sun frames', href: categoryHref('sunglasses'), icon: 'sun', terms: 'sunglasses sun shades' },
   { title: 'In-store eye tests', desc: 'What to expect in Kota', href: '/eye-tests/', icon: 'eye', terms: 'eye tests testing optometrist prescription exam vision check' },
   { title: 'Visit the shop', desc: 'Address, hours and directions', href: '/contact/', icon: 'pin', terms: 'visit shop store contact directions hours location phone kota jhalawar city mall wholesale' },
 ];
@@ -262,10 +262,6 @@ function setupCatalogue() {
     tagList.hidden = !active.length;
     filterIconCount.textContent = active.length;
     filterIconCount.hidden = !active.length;
-    for (const link of $$('[data-nav="eyeglasses"], [data-nav="sunglasses"]')) {
-      if (filters.type === link.dataset.nav) link.setAttribute('aria-current', 'page');
-      else link.removeAttribute('aria-current');
-    }
     syncSavedButtons();
   }
 
@@ -318,22 +314,33 @@ function setupProduct() {
   if (!frame) return;
   const options = $('[data-product-options]', product);
   const enquiry = $('[data-product-enquire]', product);
+  const gallery = $('[data-product-image]', product);
+  const image = $('img', gallery);
+  const colorLabel = $('[data-color-name]', product);
+  const previewLabel = $('[data-preview-color]', product);
   const views = $$('[data-gallery]', product);
+  const link = new URL(productHref(frame.id), location.origin).href;
   for (const view of views) {
     view.addEventListener('click', () => {
       views.forEach(button => button.setAttribute('aria-pressed', String(button === view)));
-      $('[data-product-image]', product).dataset.view = view.dataset.gallery;
+      gallery.dataset.view = view.dataset.gallery;
     });
   }
-  function updateMessage() {
+  function updateSelection() {
     const values = Object.fromEntries(new FormData(options));
-    $('[data-color-name]', product).textContent = `– ${COLORS[values.color]?.name || COLORS[frame.colors[0]].name}`;
-    const link = new URL(productHref(frame.id), location.origin).href;
-    enquiry.href = whatsappLink(productMessage(frame, values, link));
+    const preview = productPreview(frame, values.color);
+    if (image.getAttribute('src') !== preview.src) {
+      image.src = preview.src;
+      image.alt = preview.alt;
+      colorLabel.textContent = `– ${preview.name}`;
+      previewLabel.textContent = preview.name;
+    }
+    enquiry.href = whatsappLink(productMessage(frame, { ...values, color: preview.color }, link));
   }
-  options.addEventListener('change', updateMessage);
+  options.addEventListener('change', updateSelection);
   options.addEventListener('submit', event => event.preventDefault());
-  updateMessage();
+  window.addEventListener('pageshow', updateSelection);
+  updateSelection();
 }
 
 function setupEnquiryForm() {
