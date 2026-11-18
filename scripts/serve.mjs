@@ -2,6 +2,7 @@ import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { sendVideo } from './video-response.mjs';
 
 const root = resolve(fileURLToPath(new URL('../dist', import.meta.url)));
 const port = Number(process.env.PORT || 4173);
@@ -23,13 +24,17 @@ createServer(async (request, response) => {
     const url = new URL(request.url, 'http://local.invalid');
     path = resolve(root, `.${decodeURIComponent(url.pathname)}`);
     if (path !== root && !path.startsWith(`${root}${sep}`)) throw new Error('Invalid path');
-    if ((await stat(path)).isDirectory()) {
+    let info = await stat(path);
+    if (info.isDirectory()) {
       if (!url.pathname.endsWith('/')) {
         response.writeHead(308, { Location: `${url.pathname}/${url.search}` }).end();
         return;
       }
       path = join(path, 'index.html');
+      info = await stat(path);
     }
+    if (!info.isFile()) throw new Error('Not a file');
+    if (extname(path) === '.mp4') return sendVideo(request, response, path, info.size);
     body = await readFile(path);
   } catch {
     status = 404;

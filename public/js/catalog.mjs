@@ -18,6 +18,7 @@ export const BUSINESS = Object.freeze({
 });
 
 export const APPOINTMENT = '/contact/?topic=eye-test#enquiry';
+export const INSTAGRAM_URL = `https://www.instagram.com/${BUSINESS.instagramHandle}/`;
 
 export const CATEGORIES = {
   eyeglasses: 'Eyeglasses',
