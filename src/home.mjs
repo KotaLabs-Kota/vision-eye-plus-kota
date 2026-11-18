@@ -120,6 +120,42 @@ function visit() {
   </section>`;
 }
 
+function reels() {
+  const videos = [
+    { src: '/videos/reel-1.mp4', label: 'Buy one get one free offer' },
+    { src: '/videos/reel-2.mp4', label: 'Store visit and eye care' },
+    { src: '/videos/reel-3.mp4', label: 'Frame try-on and styles' },
+    { src: '/videos/reel-4.mp4', label: 'Anniversary month specials' },
+  ];
+  return `<section class="wrap section reels-section" aria-labelledby="reels-heading" data-reels>
+    <div class="section-heading split-heading">
+      <div>
+        <p class="eyebrow">${icon('spark')} FROM THE STUDIO</p>
+        <h2 id="reels-heading">Watch the latest reels.</h2>
+        <p class="section-lead">Offers, eye tests and frame moments from Vision Eye Plus in Kota.</p>
+      </div>
+      <a class="text-link" href="${BUSINESS.instagram}" ${externalAttrs}>${BUSINESS.instagramHandle} ${icon('up-right')}</a>
+    </div>
+    <div class="reels-track" data-reels-track>
+      ${videos.map((video, i) => `
+        <article class="reel-card" data-reel-index="${i}">
+          <div class="reel-media">
+            <video src="${video.src}" playsinline muted loop preload="metadata" aria-label="${video.label}"></video>
+            <button type="button" class="reel-play" aria-label="Play reel ${i + 1}" data-reel-play>
+              <span class="reel-play-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+          <p class="reel-caption">${video.label}</p>
+        </article>`).join('')}
+    </div>
+    <div class="reels-controls" data-js>
+      <button class="tool-button" type="button" aria-label="Previous reel" data-reel-step="-1">${icon('back')}</button>
+      <span class="reels-position" data-reel-position>01 / 04</span>
+      <button class="tool-button" type="button" aria-label="Next reel" data-reel-step="1">${icon('arrow')}</button>
+    </div>
+  </section>`;
+}
+
 export function home() {
-  return hero() + categorySection() + featured() + eyeCare() + fitFinder() + googleReviews() + visit();
+  return hero() + categorySection() + featured() + eyeCare() + fitFinder() + googleReviews() + visit() + reels();
 }
