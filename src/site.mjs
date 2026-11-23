@@ -1,9 +1,9 @@
 import { cp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { PRODUCTS, categoryHref, productHref, productImage } from '../public/js/catalog.mjs';
-import { aboutTrail, categoryTrail, contactTrail, eyeTestsTrail, shopTrail } from './breadcrumbs.mjs';
-import { categoryPages, collection } from './categories.mjs';
+import { PHOTO_SIZE, PRODUCTS, categoryHref, collectionHref, productHref } from '../public/js/catalog.mjs';
+import { aboutTrail, audienceTrail, categoryTrail, contactTrail, eyeTestsTrail, shopTrail } from './breadcrumbs.mjs';
+import { audiencePages, categoryPages, collection } from './categories.mjs';
 import { product, shop } from './catalogue.mjs';
 import { home } from './home.mjs';
 import { layout } from './layout.mjs';
@@ -21,11 +21,15 @@ const pages = [
   {
     route: '/shop/', page: 'shop', indexable: true, trail: shopTrail, render: shop,
     title: 'Browse Eyeglasses & Sunglasses | Vision Eye Plus Kota',
-    description: 'Compare eyewear frame ideas by shape, material and colour. Save the styles you’d like to try at Vision Eye Plus in Kota and ask about availability.',
+    description: 'Browse frame photos by shape, rim style and colour at Vision Eye Plus in Kota. Open a frame to ask about availability, fitting or ordering.',
   },
   ...Object.entries(categoryPages).map(([type, category]) => ({
     route: categoryHref(type), page: 'category', indexable: true, trail: categoryTrail(type),
     title: category.title, description: category.description, render: () => collection(type),
+  })),
+  ...Object.entries(audiencePages).map(([audience, edit]) => ({
+    route: collectionHref(audience), page: 'category', indexable: false, trail: audienceTrail(audience),
+    title: edit.title, description: edit.description, render: () => collection('eyeglasses', audience),
   })),
   {
     route: '/eye-tests/', page: 'eye-tests', indexable: true, trail: eyeTestsTrail, render: eyeTests,
@@ -44,8 +48,8 @@ const pages = [
   },
   ...PRODUCTS.map(frame => ({
     route: productHref(frame.id), page: 'product', indexable: false,
-    title: `${frame.name} Frame Preview | Vision Eye Plus Kota`, description: frame.description, render: () => product(frame),
-    socialImage: { path: productImage(frame.id), width: 900, height: 900, alt: frame.alt },
+    title: `${frame.name} | Vision Eye Plus Kota`, description: frame.description, render: () => product(frame),
+    socialImage: { path: frame.photos[0].src, ...PHOTO_SIZE, alt: frame.photos[0].alt },
   })),
   {
     route: '/404.html', page: 'not-found', indexable: false, render: notFound,

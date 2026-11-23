@@ -6,6 +6,9 @@ import { sendVideo } from './video-response.mjs';
 
 const root = resolve(fileURLToPath(new URL('../dist', import.meta.url)));
 const port = Number(process.env.PORT || 4173);
+// Mirror the exact redirect paths configured for the retired listings in Vercel.
+const { redirects = [] } = JSON.parse(await readFile(new URL('../vercel.json', import.meta.url), 'utf8'));
+const permanentRedirects = new Map(redirects.filter(rule => rule.permanent).map(rule => [rule.source, rule.destination]));
 const mime = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
   '.mjs': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.woff2': 'font/woff2',
@@ -22,6 +25,11 @@ createServer(async (request, response) => {
   let body;
   try {
     const url = new URL(request.url, 'http://local.invalid');
+    const destination = permanentRedirects.get(url.pathname.endsWith('/') ? url.pathname : `${url.pathname}/`);
+    if (destination) {
+      response.writeHead(308, { Location: `${destination}${url.search}` }).end();
+      return;
+    }
     path = resolve(root, `.${decodeURIComponent(url.pathname)}`);
     if (path !== root && !path.startsWith(`${root}${sep}`)) throw new Error('Invalid path');
     let info = await stat(path);

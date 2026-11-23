@@ -1,8 +1,16 @@
-import { APPOINTMENT, BUSINESS, INSTAGRAM_URL, categoryHref, whatsappLink } from '../public/js/catalog.mjs';
+import { APPOINTMENT, BUSINESS, INSTAGRAM_DM_URL, INSTAGRAM_URL, categoryHref, collectionHref, whatsappLink } from '../public/js/catalog.mjs';
 import { escapeHtml, icon } from '../public/js/components.mjs';
 import { renderSeo } from './seo.mjs';
 
 export const externalAttrs = 'target="_blank" rel="noopener noreferrer"';
+export function shopActions(message, { product = false } = {}) {
+  return `<div class="enquiry-actions">
+    <a class="button button--primary"${product ? ' data-product-enquire' : ''} href="${escapeHtml(whatsappLink(message))}" ${externalAttrs}>${icon('chat')} WhatsApp ${icon('up-right')}</a>
+    <a class="button button--outline" href="tel:${BUSINESS.phone}">${icon('phone')} Call the shop</a>
+    <a class="button button--outline" href="${INSTAGRAM_DM_URL}" ${externalAttrs}>${icon('instagram')} Instagram DM ${icon('up-right')}</a>
+  </div>`;
+}
+
 const studioUrl = 'https://kotalabs.in/';
 const nav = [
   ['/', 'Home'], [categoryHref('eyeglasses'), 'Eyeglasses'], [categoryHref('sunglasses'), 'Sunglasses'],
@@ -42,7 +50,7 @@ function footer() {
   return `<footer class="site-footer">
     <div class="wrap footer-grid">
       <div class="footer-intro">${brand()}<p>Eyewear, eye tests and a fit that feels right. Find us opposite City Mall in Kota.</p></div>
-      <div class="footer-links"><h2>Explore</h2><a href="/shop/">All frames</a><a href="${categoryHref('eyeglasses')}">Eyeglasses</a><a href="${categoryHref('sunglasses')}">Sunglasses</a><a href="/#fit-finder">Frame fit guide</a></div>
+      <div class="footer-links"><h2>Explore</h2><a href="/shop/">All frames</a><a href="${collectionHref('men')}">Men’s frames</a><a href="${collectionHref('women')}">Women’s frames</a><a href="${categoryHref('sunglasses')}">Sunglasses</a><a href="/#fit-finder">Frame fit guide</a></div>
       <div class="footer-links"><h2>The studio</h2><a href="/eye-tests/">Eye tests</a><a href="/about/">About us</a><a href="/contact/">Visit us</a><a href="/contact/#faq">FAQs</a></div>
       <div class="footer-links footer-location"><h2>Find us in Kota</h2>${storeAddress()}<a href="tel:${BUSINESS.phone}">${BUSINESS.phoneDisplay}</a><a class="footer-map" href="${BUSINESS.directions}" ${externalAttrs}>Get directions ${icon('up-right')}</a></div>
     </div>
@@ -64,7 +72,7 @@ function dialogs(route) {
       <div class="sheet-heading"><div><p class="eyebrow">FIND IT FAST</p><h2 id="search-title">Search Vision Eye Plus</h2></div><button class="tool-button" type="button" aria-label="Close search" data-close>${icon('close')}</button></div>
       <form class="search-form" action="/shop/" role="search">
         <label for="site-search" class="visually-hidden">Search frames and services</label>${icon('search')}
-        <input type="search" id="site-search" name="q" placeholder="Try ‘round’, ‘tortoise’ or ‘eye test’" autocomplete="off" maxlength="80" autofocus data-search>
+        <input type="search" id="site-search" name="q" placeholder="Try ‘square’, ‘rimless’ or ‘eye test’" autocomplete="off" maxlength="80" autofocus data-search>
         <button class="tool-button" type="submit" aria-label="Search catalogue">${icon('arrow')}</button>
       </form>
       <p class="visually-hidden" role="status" data-search-status></p>
@@ -80,7 +88,7 @@ function dialogs(route) {
   <dialog class="sheet drawer menu-sheet" id="menu-dialog" aria-labelledby="menu-title" data-dialog="menu">
     <div class="sheet-inner">
       <div class="sheet-heading"><h2 id="menu-title">Explore</h2><button class="tool-button" type="button" aria-label="Close menu" data-close autofocus>${icon('close')}</button></div>
-      <nav class="mobile-nav" aria-label="Mobile navigation">${navLinks(route)}${navLink(route, '/about/', 'About us')}</nav>
+      <nav class="mobile-nav" aria-label="Mobile navigation">${navLinks(route)}${navLink(route, collectionHref('men'), 'Men’s frames')}${navLink(route, collectionHref('women'), 'Women’s frames')}${navLink(route, '/about/', 'About us')}</nav>
       <a class="button button--primary" href="${APPOINTMENT}">Book an eye test ${icon('arrow')}</a>
       <div class="menu-contacts"><a href="tel:${BUSINESS.phone}">${icon('phone')} ${BUSINESS.phoneDisplay}</a><a href="${escapeHtml(whatsappLink('Hello Vision Eye Plus, I have a question about your Kota store.'))}" ${externalAttrs}>${icon('chat')} WhatsApp</a></div>
     </div>

@@ -1,6 +1,6 @@
 import {
-  CATALOGUE_FILTERS, CATEGORIES, FIT_GUIDE, PRODUCTS, REVIEWS, SHAPES,
-  categoryHref, filterFrames, parseFilters, productHref, productImage, productPreview, whatsappLink,
+  AUDIENCES, CATALOGUE_FILTERS, CATEGORIES, FIT_GUIDE, PRODUCTS, REVIEWS, SHAPES,
+  categoryHref, collectionHref, featuredFrames, filterFrames, parseFilters, productHref, whatsappLink,
 } from './catalog.mjs';
 import { escapeHtml, frameCard, icon } from './components.mjs';
 import { contactMessage, productMessage, todayInKota } from './enquiries.mjs';
@@ -43,7 +43,7 @@ function syncSavedButtons() {
     count.setAttribute('aria-hidden', 'true');
   }
   const trigger = $('[data-open="wishlist"]');
-  trigger?.setAttribute('aria-label', saved.size ? `Saved frames (${saved.size})` : 'Saved frames');
+  trigger?.setAttribute('aria-label', saved.size ? `${saved.size} saved ${saved.size === 1 ? 'frame' : 'frames'}` : 'Saved frames');
 }
 
 function renderWishlist() {
@@ -55,7 +55,7 @@ function renderWishlist() {
   section.innerHTML = `<p class="overlay-subtitle">${saved.size} saved ${saved.size === 1 ? 'style' : 'styles'}</p><div class="overlay-list">${[...saved].reverse().map(id => {
     const frame = FRAMES.get(id);
     const name = escapeHtml(frame.name);
-    return `<div class="saved-item"><a href="${productHref(id)}"><img src="${productImage(id)}" width="47" height="42" alt=""><span><strong>${name}</strong><small>${CATEGORIES[frame.type]} · ${SHAPES[frame.shape]}</small></span></a><button class="tool-button" type="button" data-remove-saved="${id}" aria-label="Remove ${name}">${icon('close')}</button></div>`;
+    return `<div class="saved-item"><a href="${productHref(id)}"><img src="${frame.photos[0].src}" width="47" height="42" alt=""><span><strong>${name}</strong><small>${CATEGORIES[frame.type]} · ${SHAPES[frame.shape]}</small></span></a><button class="tool-button" type="button" data-remove-saved="${id}" aria-label="Remove ${name}">${icon('close')}</button></div>`;
   }).join('')}</div><p class="overlay-footer">Saved in this browser. Bring your shortlist when you visit the shop.</p>`;
 }
 
@@ -92,9 +92,12 @@ window.addEventListener('storage', event => {
 const quickSearch = [
   { title: 'Eyeglasses', desc: 'Explore everyday frames', href: categoryHref('eyeglasses'), icon: 'glasses', terms: 'eyeglasses eyewear glasses prescription frames optical spectacles' },
   { title: 'Sunglasses', desc: 'Explore sun frames', href: categoryHref('sunglasses'), icon: 'sun', terms: 'sunglasses sun shades' },
+  ...Object.entries(AUDIENCES).map(([audience, title]) => ({ title: `${title}’s frames`, desc: 'Browse the collection', href: collectionHref(audience), icon: 'glasses', audience, terms: 'eyeglasses eyewear glasses frames' })),
   { title: 'In-store eye tests', desc: 'What to expect in Kota', href: '/eye-tests/', icon: 'eye', terms: 'eye tests testing optometrist prescription exam vision check' },
   { title: 'Visit the shop', desc: 'Address, hours and directions', href: '/contact/', icon: 'pin', terms: 'visit shop store contact directions hours location phone kota jhalawar city mall wholesale' },
 ];
+
+const shortcutMatches = (item, terms) => terms.every(term => Object.hasOwn(AUDIENCES, term) ? item.audience === term : item.terms.includes(term));
 
 function searchRow(item) {
   return `<a class="overlay-row" href="${escapeHtml(item.href)}">${item.image ? `<img src="${item.image}" width="47" height="42" alt="">` : `<span class="trust-icon">${icon(item.icon)}</span>`}<span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.desc)}</small></span>${icon('chevron')}</a>`;
@@ -104,12 +107,12 @@ function renderSearch() {
   const query = $('[data-search]').value.trim();
   const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
   const matches = query ? filterFrames(PRODUCTS, { q: query }).map(frame => ({
-    title: frame.name, desc: `${CATEGORIES[frame.type]} · ${SHAPES[frame.shape]}`, href: productHref(frame.id), image: productImage(frame.id),
+    title: frame.name, desc: `${CATEGORIES[frame.type]} · ${SHAPES[frame.shape]}`, href: productHref(frame.id), image: frame.photos[0].src,
   })) : [];
-  const shortcuts = query ? quickSearch.filter(item => terms.every(term => item.terms.includes(term))) : quickSearch;
+  const shortcuts = query ? quickSearch.filter(item => shortcutMatches(item, terms)) : quickSearch;
   const list = (title, items) => items.length ? `<p class="overlay-subtitle">${title}</p><div class="overlay-list">${items.map(searchRow).join('')}</div>` : '';
   const total = matches.length + shortcuts.length;
-  $('[data-search-results]').innerHTML = list('Frame styles', matches) + list(query ? 'Pages' : 'Quick links', shortcuts) + (query && !total ? '<p class="overlay-footer">No matches. Try a shape like “round” or a service like “eye test”.</p>' : '');
+  $('[data-search-results]').innerHTML = list('Frame styles', matches) + list(query ? 'Pages' : 'Quick links', shortcuts) + (query && !total ? '<p class="overlay-footer">No matches. Try a shape like “square” or a service like “eye test”.</p>' : '');
   $('[data-search-status]').textContent = query ? `${total} search ${total === 1 ? 'result' : 'results'}` : '';
 }
 
@@ -126,7 +129,7 @@ function setupDialogs() {
     const query = search.value.trim();
     const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
     if (!terms.length || filterFrames(PRODUCTS, { q: query }).length) return;
-    const matches = quickSearch.filter(item => terms.every(term => item.terms.includes(term)));
+    const matches = quickSearch.filter(item => shortcutMatches(item, terms));
     if (matches.length === 1) {
       event.preventDefault();
       location.assign(matches[0].href);
@@ -170,11 +173,11 @@ function setupFeatured() {
   const buttons = $$('[data-feature]', section);
   for (const button of buttons) {
     button.addEventListener('click', () => {
-      const type = button.dataset.feature;
-      const frames = type === 'all' ? PRODUCTS.slice(0, 4) : PRODUCTS.filter(frame => frame.type === type);
+      const audience = button.dataset.feature;
+      const frames = featuredFrames(audience);
       buttons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
       $('[data-feature-grid]', section).innerHTML = frames.map(frameCard).join('');
-      $('[data-feature-status]', section).textContent = `${frames.length} ${type === 'all' ? 'featured frame styles' : CATEGORIES[type].toLowerCase() + ' styles'}`;
+      $('[data-feature-status]', section).textContent = `${frames.length} ${audience ? AUDIENCES[audience] + '’s frame styles' : 'featured frame styles'}`;
       syncSavedButtons();
     });
   }
@@ -223,18 +226,11 @@ function setupCatalogue() {
   const filterIconCount = $('[data-filter-count]', catalogue);
   const toggle = $('[data-filter-toggle]', catalogue);
   const find = name => form.elements.namedItem(name);
-  const keys = ['type', 'shape', 'material', 'color', 'q'];
+  const keys = ['type', 'shape', 'rim', 'color', 'q'];
   let inputTimer;
 
   const readLocation = () => parseFilters(new URLSearchParams(location.search));
-  const setFilterValue = (key, value) => {
-    const control = find(key);
-    if (key === 'type') {
-      for (const radio of control) radio.checked = radio.value === value;
-    } else {
-      control.value = value;
-    }
-  };
+  const setFilterValue = (key, value) => { find(key).value = value; };
   const syncForm = filters => {
     for (const key of [...keys, 'sort']) setFilterValue(key, filters[key]);
   };
@@ -275,6 +271,10 @@ function setupCatalogue() {
   function setFromLocation() {
     clearTimeout(inputTimer);
     const filters = readLocation();
+    if (filters.type === 'sunglasses' && !PRODUCTS.some(frame => frame.type === 'sunglasses')) {
+      location.replace(categoryHref('sunglasses'));
+      return;
+    }
     syncForm(filters);
     render(filters);
   }
@@ -316,31 +316,37 @@ function setupProduct() {
   const enquiry = $('[data-product-enquire]', product);
   const gallery = $('[data-product-image]', product);
   const image = $('img', gallery);
-  const colorLabel = $('[data-color-name]', product);
-  const previewLabel = $('[data-preview-color]', product);
-  const views = $$('[data-gallery]', product);
+  const caption = $('[data-photo-caption]', product);
+  const count = $('[data-photo-count]', product);
+  const views = $$('[data-product-photo]', product);
   const link = new URL(productHref(frame.id), location.origin).href;
   for (const view of views) {
-    view.addEventListener('click', () => {
-      views.forEach(button => button.setAttribute('aria-pressed', String(button === view)));
-      gallery.dataset.view = view.dataset.gallery;
+    view.addEventListener('click', event => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const index = frame.photos.findIndex(photo => photo.id === view.dataset.productPhoto);
+      if (index < 0) return;
+      event.preventDefault();
+      if (view.hasAttribute('aria-current')) return;
+      const photo = frame.photos[index];
+      image.src = photo.src;
+      image.alt = photo.alt;
+      gallery.href = photo.src;
+      caption.textContent = photo.label;
+      count.textContent = `${String(index + 1).padStart(2, '0')} / ${String(frame.photos.length).padStart(2, '0')}`;
+      for (const item of views) {
+        if (item === view) item.setAttribute('aria-current', 'true');
+        else item.removeAttribute('aria-current');
+      }
     });
   }
-  function updateSelection() {
+  function updateEnquiry() {
     const values = Object.fromEntries(new FormData(options));
-    const preview = productPreview(frame, values.color);
-    if (image.getAttribute('src') !== preview.src) {
-      image.src = preview.src;
-      image.alt = preview.alt;
-      colorLabel.textContent = `– ${preview.name}`;
-      previewLabel.textContent = preview.name;
-    }
-    enquiry.href = whatsappLink(productMessage(frame, { ...values, color: preview.color }, link));
+    enquiry.href = whatsappLink(productMessage(frame, values, link));
   }
-  options.addEventListener('change', updateSelection);
+  options.addEventListener('change', updateEnquiry);
   options.addEventListener('submit', event => event.preventDefault());
-  window.addEventListener('pageshow', updateSelection);
-  updateSelection();
+  window.addEventListener('pageshow', updateEnquiry);
+  updateEnquiry();
 }
 
 function setupEnquiryForm() {

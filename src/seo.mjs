@@ -6,7 +6,7 @@ export const SHARE_IMAGE = {
   path: '/images/vision-eye-plus-share.jpg',
   width: 1200,
   height: 630,
-  alt: 'Vision Eye Plus optical shop in Kota, with a portrait of a woman wearing black eyeglasses',
+  alt: 'Vision Eye Plus optical shop in Kota, with silver aviator eyeglasses',
 };
 
 export function resolveSiteOrigin(env = process.env) {

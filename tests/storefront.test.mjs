@@ -1,71 +1,88 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { access, readFile } from 'node:fs/promises';
-import { BUSINESS, PRODUCTS, CATEGORIES, SHAPES, MATERIALS, COLORS, filterFrames, parseFilters, productHref, productImage, productPreview, whatsappLink } from '../public/js/catalog.mjs';
+import { readFile, readdir } from 'node:fs/promises';
+import { AUDIENCES, BUSINESS, CATEGORIES, COLORS, INSTAGRAM_DM_URL, PHOTO_SIZE, PRODUCTS, RIMS, SHAPES, featuredFrames, filterFrames, parseFilters, productHref, whatsappLink } from '../public/js/catalog.mjs';
 import { contactMessage, formatPreferredDay, productMessage, todayInKota } from '../public/js/enquiries.mjs';
 import { home } from '../src/home.mjs';
 import { layout } from '../src/layout.mjs';
 import { product, shop } from '../src/catalogue.mjs';
 import { contact } from '../src/visit.mjs';
-import { escapeHtml } from '../public/js/components.mjs';
+import { escapeHtml, frameCard } from '../public/js/components.mjs';
 
 const ids = entries => entries.map(frame => frame.id);
 
-test('the catalogue has unique slugs and valid style metadata and image assets', async () => {
-  assert.equal(PRODUCTS.length, 6);
+test('catalogue entries have valid, distinct photos, slugs and collection metadata', async () => {
+  assert.equal(PRODUCTS.length, 10);
   assert.equal(new Set(ids(PRODUCTS)).size, PRODUCTS.length);
+  const assets = [];
+  const hashes = new Set();
   for (const frame of PRODUCTS) {
     assert.match(frame.id, /^[a-z0-9-]+$/);
-    assert.ok(CATEGORIES[frame.type] && SHAPES[frame.shape] && MATERIALS[frame.material]);
-    assert.ok(frame.colors.length && frame.colors.every(key => COLORS[key]));
+    assert.equal(CATEGORIES[frame.type], 'Eyeglasses');
+    assert.ok(SHAPES[frame.shape] && RIMS[frame.rim] && COLORS[frame.color]);
+    assert.ok(frame.audiences.length && frame.audiences.every(key => AUDIENCES[key]));
+    assert.ok(frame.photos.length);
     assert.equal(productHref(frame.id), `/shop/${frame.id}/`);
-    await access(new URL(`../public${productImage(frame.id)}`, import.meta.url));
-  }
-});
-
-test('every selectable colour links to its own WebP frame preview', async () => {
-  for (const frame of PRODUCTS) {
-    const previews = frame.colors.map(color => productPreview(frame, color));
-    const hashes = new Set();
-    for (const [index, preview] of previews.entries()) {
-      const color = frame.colors[index];
-      assert.equal(preview.color, color);
-      assert.equal(preview.name, COLORS[color].name);
-      if (index) assert.ok(preview.alt.includes(preview.name));
-      const image = await readFile(new URL(`../public${preview.src}`, import.meta.url));
-      assert.equal(image.toString('ascii', 8, 12), 'WEBP', preview.src);
+    assert.ok(!Object.hasOwn(frame, 'price') && !Object.hasOwn(frame, 'availability'));
+    for (const photo of frame.photos) {
+      assert.equal(photo.src, `/images/catalog/${frame.id}-${photo.id}.webp`);
+      assert.ok(photo.label && photo.alt);
+      const image = await readFile(new URL(`../public${photo.src}`, import.meta.url));
+      assert.equal(image.toString('ascii', 8, 12), 'WEBP', photo.src);
       hashes.add(createHash('sha256').update(image).digest('hex'));
+      assets.push(photo.src.split('/').at(-1));
     }
-    assert.equal(new Set(previews.map(({ src }) => src)).size, frame.colors.length, frame.id);
-    assert.equal(hashes.size, frame.colors.length, frame.id);
-    assert.equal(previews[0].src, productImage(frame.id));
-    assert.deepEqual(productPreview(frame, 'constructor'), previews[0]);
   }
+  assert.equal(assets.length, 15);
+  assert.equal(hashes.size, assets.length);
+  assert.deepEqual(assets.sort(), (await readdir(new URL('../public/images/catalog/', import.meta.url))).sort());
 });
 
-test('the initial frame preview, caption and checked swatch agree without JavaScript', () => {
+test('product links, galleries and enquiry actions are useful without JavaScript', () => {
+  const { width, height } = PHOTO_SIZE;
   for (const frame of PRODUCTS) {
-    const preview = productPreview(frame);
+    const first = frame.photos[0];
     const html = product(frame);
-    assert.ok(html.includes(`<img src="${preview.src}" width="900" height="900" alt="${escapeHtml(preview.alt)}"`));
-    assert.ok(html.includes(`name="color" value="${preview.color}" checked`));
-    assert.ok(html.includes(`<span data-preview-color>${preview.name}</span>. Illustrative colour preview.`));
+    assert.ok(frameCard(frame).includes(`class="frame-link" href="${productHref(frame.id)}"`));
+    assert.ok(frameCard(frame).includes(`<img src="${first.src}" width="${width}" height="${height}"`));
+    assert.ok(html.includes(`<img src="${first.src}" width="${width}" height="${height}" alt="${escapeHtml(first.alt)}"`));
+    assert.ok(html.includes(`href="${first.src}" data-product-image target="_blank" rel="noopener noreferrer"`));
+    assert.ok(html.includes(`<span data-photo-caption aria-live="polite">${first.label}</span>`));
+    assert.equal([...html.matchAll(/data-product-photo="/g)].length, frame.photos.length > 1 ? frame.photos.length : 0);
+    if (frame.photos.length > 1) {
+      assert.ok(html.includes(`data-product-photo="${first.id}" aria-current="true"`));
+      for (const photo of frame.photos) assert.ok(html.includes(`href="${photo.src}" data-product-photo="${photo.id}"`));
+    }
+    const panel = html.match(/<section id="ask-about-frame"[\s\S]*?<\/section>/)?.[0];
+    assert.ok(panel);
+    assert.ok(panel.includes(`href="tel:${BUSINESS.phone}"`));
+    assert.ok(panel.includes(`href="${INSTAGRAM_DM_URL}" target="_blank" rel="noopener noreferrer"`));
+    const message = new URL(panel.match(/data-product-enquire href="([^"]+)"/)[1]);
+    assert.equal(message.hostname, 'wa.me');
+    assert.equal(message.pathname, `/${BUSINESS.whatsapp}`);
+    assert.ok(message.searchParams.get('text').includes(frame.name));
+    assert.ok(message.searchParams.get('text').includes(COLORS[frame.color].name));
+    assert.doesNotMatch(html, /(?:₹|Rs\.?\s+|INR\s+)\d|priceCurrency|InStock|Buy now/i);
   }
 });
 
-test('catalogue filters combine selections and keep a meaningful empty state', () => {
-  assert.deepEqual(ids(filterFrames(PRODUCTS, { type: 'sunglasses', material: 'metal', color: 'gold' })), ['afterlight']);
-  assert.deepEqual(ids(filterFrames(PRODUCTS, { q: ' champagne   ROUND ', type: 'eyeglasses' })), ['boulevard']);
-  assert.deepEqual(filterFrames(PRODUCTS, { type: 'sunglasses', shape: 'square' }), []);
-  assert.deepEqual(ids(filterFrames(PRODUCTS, { sort: 'name-asc' })), ['afterlight', 'arcade', 'boulevard', 'meridian', 'regent', 'solstice']);
-  assert.equal(ids(filterFrames(PRODUCTS, { sort: 'name-desc' }))[0], 'solstice');
-  assert.equal(PRODUCTS[0].id, 'regent');
+test('catalogue filters combine choices and featured frames follow the collection', () => {
+  assert.deepEqual(ids(filterFrames(PRODUCTS, { type: 'eyeglasses', rim: 'rimless', color: 'gold' })), ['champagne-rimless']);
+  assert.deepEqual(ids(filterFrames(PRODUCTS, { q: ' midnight   SQUARE ' })), ['midnight-square']);
+  assert.deepEqual(filterFrames(PRODUCTS, { color: 'red', shape: 'aviator' }), []);
+  assert.equal(ids(filterFrames(PRODUCTS, { sort: 'name-asc' }))[0], 'bold-black-square');
+  assert.equal(ids(filterFrames(PRODUCTS, { sort: 'name-desc' }))[0], 'studio-square');
+  for (const audience of Object.keys(AUDIENCES)) {
+    const frames = PRODUCTS.filter(frame => frame.audiences.includes(audience));
+    assert.deepEqual(filterFrames(PRODUCTS, { q: audience }), frames);
+    assert.deepEqual(featuredFrames(audience), frames.slice(0, 4));
+  }
 });
 
 test('filter URLs ignore unknown values and constrain free text', () => {
-  const state = parseFilters(new URLSearchParams('type=eyeglasses&color=constructor&shape=round&sort=name-desc&q=%20foil%20'));
-  assert.deepEqual(state, { q: 'foil', type: 'eyeglasses', shape: 'round', color: '', material: '', sort: 'name-desc' });
+  const state = parseFilters(new URLSearchParams('type=eyeglasses&color=constructor&shape=square&rim=bad&sort=name-desc&q=%20foil%20'));
+  assert.deepEqual(state, { q: 'foil', type: 'eyeglasses', shape: 'square', color: '', rim: '', sort: 'name-desc' });
   assert.equal(parseFilters(new URLSearchParams({ q: 'q'.repeat(100), sort: 'bad' })).q.length, 80);
   assert.equal(parseFilters(new URLSearchParams('sort=bad')).sort, 'featured');
   assert.equal(escapeHtml('"<&>'), '&quot;&lt;&amp;&gt;');
@@ -86,8 +103,9 @@ test('enquiries preserve user selections in a prefilled message, without confirm
   assert.match(link.searchParams.get('text'), /name is Anu\.[\s\S]*21 November 2026[\s\S]*Preferred time: Morning[\s\S]*Could you confirm/);
   assert.doesNotMatch(contactMessage({ name: 'Anu', topic: 'wholesale', date: '2026-11-21', time: 'Morning' }), /Preferred/);
   const frame = PRODUCTS[0];
-  const text = productMessage(frame, { color: 'tortoise', fit: 'Wide', lens: 'Progressive' }, 'https://example.test/shop/regent/');
-  assert.match(text, /The Regent[\s\S]*Honey Tortoise[\s\S]*Wide[\s\S]*Progressive[\s\S]*shop\/regent\//);
+  const text = productMessage(frame, { fit: 'Wide', lens: 'Progressive' }, 'https://example.test/shop/silver-aviator/');
+  assert.match(text, /Silver Aviator[\s\S]*Colour shown: Silver[\s\S]*Wide[\s\S]*Progressive[\s\S]*shop\/silver-aviator\//);
+  assert.doesNotMatch(productMessage(frame, { fit: 'Not sure', lens: 'Other' }), /preference/);
 });
 
 test('static templates expose working contact details and do not advertise live inventory', () => {
@@ -95,8 +113,8 @@ test('static templates expose working contact details and do not advertise live 
   assert.match(home(), /href="\/shop\/"/);
   assert.match(contact(), /Shop No. UG-05, Bagherwal Four Seasons/);
   assert.match(contact(), /tel:\+919929594560/);
-  assert.match(shop(), /not live inventory/i);
-  assert.match(product(PRODUCTS[0]), /not a live product listing/i);
+  assert.match(shop(), /confirm current stock and pricing/i);
+  assert.match(product(PRODUCTS[0]), /Ask us about stock, current pricing or ordering/i);
 });
 
 test('the shared header places the Instagram profile link immediately before Search', () => {
