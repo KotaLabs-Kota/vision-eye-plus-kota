@@ -23,56 +23,87 @@ export const BUSINESS = Object.freeze({
 
 export const APPOINTMENT = '/contact/?topic=eye-test#enquiry';
 export const INSTAGRAM_URL = `https://www.instagram.com/${BUSINESS.instagramHandle}/`;
+export const INSTAGRAM_DM_URL = `https://ig.me/m/${BUSINESS.instagramHandle}`;
 
 export const CATEGORIES = {
   eyeglasses: 'Eyeglasses',
-  sunglasses: 'Sunglasses',
 };
 
-export const SHAPES = { square: 'Square', round: 'Round', rectangle: 'Rectangle', 'cat-eye': 'Cat-eye', aviator: 'Aviator' };
-export const MATERIALS = { acetate: 'Acetate', metal: 'Metal' };
+export const AUDIENCES = { men: 'Men', women: 'Women' };
+export const SHAPES = { square: 'Square', rounded: 'Rounded', rectangle: 'Rectangle', geometric: 'Geometric', aviator: 'Aviator' };
+export const RIMS = { 'full-rim': 'Full rim', rimless: 'Rimless' };
 export const COLORS = {
-  black: { name: 'Ink Black', hex: '#27252c' },
-  tortoise: { name: 'Honey Tortoise', hex: '#9d6039' },
-  gold: { name: 'Champagne Gold', hex: '#c6a570' },
-  silver: { name: 'Brushed Silver', hex: '#a8a9ae' },
-  lilac: { name: 'Soft Lilac', hex: '#c3b1d7' },
-  clear: { name: 'Clear Crystal', hex: '#ece1d6' },
-  gunmetal: { name: 'Gunmetal', hex: '#646573' },
+  black: { name: 'Black', hex: '#29282c' },
+  navy: { name: 'Midnight Blue', hex: '#272c40' },
+  'navy-silver': { name: 'Navy & Silver', hex: '#5c6988' },
+  silver: { name: 'Silver', hex: '#a8a9ad' },
+  gold: { name: 'Champagne Gold', hex: '#c7a878' },
+  green: { name: 'Deep Green', hex: '#32463c' },
+  red: { name: 'Scarlet', hex: '#c92a33' },
+  grey: { name: 'Smoke Grey', hex: '#b7b6bf' },
+  clear: { name: 'Clear Crystal', hex: '#e4e3e5' },
 };
 
+export const PHOTO_SIZE = { width: 1080, height: 650 };
+const photoLabels = { angle: 'Angle view', front: 'Front view', folded: 'Folded view' };
+
+// Collection edits are style suggestions, not gender or fit restrictions.
 export const PRODUCTS = [
   {
-    id: 'regent', name: 'The Regent', type: 'eyeglasses', shape: 'square', material: 'acetate', colors: ['black', 'tortoise', 'clear'],
-    alt: 'Glossy black acetate eyeglasses with softly square rims',
-    description: 'A softly squared silhouette with a confident, thicker rim. A good reference if you like a classic frame with a little more character at the bridge.',
+    id: 'silver-aviator', name: 'Silver Aviator', shape: 'aviator', rim: 'full-rim', color: 'silver', audiences: ['men'],
+    description: 'Thin silver rims, a straight brow bar and dark temple tips give this double-bridge frame a classic aviator profile.',
+    views: { angle: 'Angled view of silver aviator eyeglasses with a double bridge', front: 'Front view of the thin silver aviator rims and straight brow bar' },
   },
   {
-    id: 'boulevard', name: 'The Boulevard', type: 'eyeglasses', shape: 'round', material: 'metal', colors: ['gold', 'silver', 'black'],
-    alt: 'Fine champagne-gold metal eyeglasses with round rims',
-    description: 'Fine metal rims and a rounded profile. A lighter-looking frame for anyone who wants their glasses to do a little less talking.',
+    id: 'studio-square', name: 'Studio Square', shape: 'square', rim: 'full-rim', color: 'black', audiences: ['men', 'women'],
+    description: 'Soft square rims in glossy black with two small silver rivets on each corner.',
+    views: { angle: 'Angled view of thick black square eyeglasses with two round rivets at each corner' },
   },
   {
-    id: 'solstice', name: 'The Solstice', type: 'sunglasses', shape: 'cat-eye', material: 'acetate', colors: ['tortoise', 'black'],
-    alt: 'Tortoiseshell cat-eye sunglasses with dark brown lenses',
-    description: 'An upswept outer corner with a softly rounded lower rim. Bring this reference if you want a bold sun frame without a dramatically pointed cat-eye shape.',
+    id: 'crystal-curve', name: 'Crystal Curve', shape: 'rounded', rim: 'full-rim', color: 'clear', audiences: ['women'],
+    description: 'Clear rims with rounded corners and a sculpted bridge keep this frame understated from the front.',
+    views: { folded: 'Clear rounded eyeglasses photographed with their translucent temples folded' },
   },
   {
-    id: 'arcade', name: 'The Arcade', type: 'eyeglasses', shape: 'rectangle', material: 'acetate', colors: ['lilac', 'clear', 'black'],
-    alt: 'Translucent lilac rectangular acetate eyeglasses',
-    description: 'Clean rectangular lines and a substantial acetate rim. Compare a translucent finish with a bolder, darker frame for everyday wear.',
+    id: 'scarlet-rimless', name: 'Scarlet Rimless', shape: 'rectangle', rim: 'rimless', color: 'red', audiences: ['women'],
+    description: 'A rectangular rimless front with a dark bridge and bright red temples. The colour comes from the sides rather than a rim around the lenses.',
+    views: { front: 'Front view of rectangular rimless eyeglasses with bright red temples', folded: 'Red rimless eyeglasses with both temples folded behind the lenses' },
   },
   {
-    id: 'meridian', name: 'The Meridian', type: 'eyeglasses', shape: 'rectangle', material: 'metal', colors: ['gunmetal', 'silver'],
-    alt: 'Matte gunmetal rectangular eyeglasses with thin metal rims',
-    description: 'A neutral, low-profile rectangle with pared-back metal rims. Use it as a reference if you prefer straight lines and understated hardware.',
+    id: 'midnight-square', name: 'Midnight Square', shape: 'square', rim: 'full-rim', color: 'navy', audiences: ['men'],
+    description: 'An almost-black blue finish and fine square rims with softened corners. Compare the front and angle photos to see the slim bridge and temples.',
+    views: { angle: 'Angled view of midnight-blue square eyeglasses with thin rims', front: 'Front view of the dark blue square rims and single bridge' },
   },
   {
-    id: 'afterlight', name: 'The Afterlight', type: 'sunglasses', shape: 'aviator', material: 'metal', colors: ['gold', 'gunmetal'],
-    alt: 'Gold aviator sunglasses with a double bridge and brown lenses',
-    description: 'A double bridge, relaxed oversized lenses and a warm gradient tint. A vintage-inspired starting point for finding your next sun frame.',
+    id: 'navy-silver-geo', name: 'Navy & Silver Geo', shape: 'geometric', rim: 'full-rim', color: 'navy-silver', audiences: ['men', 'women'],
+    description: 'Navy edges trace the angled upper corners, with silver hardware at the bridge and along the temples.',
+    views: { angle: 'Angled view of navy geometric eyeglasses with silver temples', front: 'Front view of geometric navy rims with a silver bridge', folded: 'Navy and silver geometric eyeglasses with their temples folded' },
   },
-];
+  {
+    id: 'bold-black-square', name: 'Bold Black Square', shape: 'square', rim: 'full-rim', color: 'black', audiences: ['men'],
+    description: 'Broad black rims with squared upper corners and a single oval silver accent on each side.',
+    views: { front: 'Straight-on photo of broad black square eyeglasses with oval silver accents' },
+  },
+  {
+    id: 'forest-rectangle', name: 'Forest Rectangle', shape: 'rectangle', rim: 'full-rim', color: 'green', audiences: ['men', 'women'],
+    description: 'A deep green rectangular front with a defined brow and a slim lower rim.',
+    views: { folded: 'Front of deep green rectangular eyeglasses with the temples folded' },
+  },
+  {
+    id: 'champagne-rimless', name: 'Champagne Rimless', shape: 'rectangle', rim: 'rimless', color: 'gold', audiences: ['women'],
+    description: 'Rectangular rimless lenses with champagne-coloured hardware and darker temple tips.',
+    views: { angle: 'Angled view of rectangular rimless eyeglasses with champagne hardware' },
+  },
+  {
+    id: 'smoke-square', name: 'Smoke Square', shape: 'square', rim: 'full-rim', color: 'grey', audiences: ['women'],
+    description: 'Translucent grey square rims paired with slim silver-tone temples.',
+    views: { angle: 'Angled view of translucent grey square eyeglasses with slim silver-tone temples' },
+  },
+].map(({ views, ...frame }) => ({
+  type: 'eyeglasses',
+  ...frame,
+  photos: Object.entries(views).map(([id, alt]) => ({ id, alt, label: photoLabels[id], src: `/images/catalog/${frame.id}-${id}.webp` })),
+}));
 
 export const REVIEWS = [
   { quote: 'Very nice collection and prices are reasonable and good service', credit: 'Google Maps review' },
@@ -82,14 +113,14 @@ export const REVIEWS = [
 
 export const FIT_GUIDE = {
   round: { label: 'Round', title: 'Start with a little structure.', description: 'Square and rectangular rims can add definition to soft lines. Try a frame a similar width to your face and check that it doesn’t rest on your cheeks when you smile.', shape: 'square', icon: 'shape-round' },
-  square: { label: 'Angular', title: 'Try a softer silhouette.', description: 'Curved metal rims and gentle round shapes can soften an angular jawline. Try a few widths and choose the one that feels stable without squeezing.', shape: 'round', icon: 'shape-square' },
+  square: { label: 'Angular', title: 'Try a softer silhouette.', description: 'Rounded rims can soften an angular jawline. Try a few widths and choose the one that feels stable without squeezing.', shape: 'rounded', icon: 'shape-square' },
   oval: { label: 'Oval', title: 'Play with proportion.', description: 'Start with a frame as wide as the broadest part of your face. A rectangle can add contrast, while a bolder rim makes the eyewear more of a feature.', shape: 'rectangle', icon: 'shape-oval' },
 };
 
 export const CONTACT_FAQS = [
   ['Where exactly is the shop?', 'We’re at Shop No. UG-05, Bagherwal Four Seasons, on Jhalawar Road opposite City Mall in Kota. Use the directions link above for the storefront pin.'],
   ['Can I request an eye test?', 'Yes. Call the store or use the eye test option in the enquiry form. Ask the team to confirm availability, any fees, and the time before you travel.'],
-  ['Can I buy these frames online?', 'There is no online checkout. The frame previews are examples to help you describe what you like. Ask the store for current stock, prices, lens options, and pickup details.'],
+  ['Can I buy these frames online?', 'There is no online checkout. Open a frame and call, WhatsApp, or message the shop on Instagram to confirm availability, pricing, lenses and how to order.'],
   ['Can I bring my own prescription?', 'Bring your current prescription and glasses, if you have them. The store can help you discuss suitable frames and lenses in person.'],
   ['Can I enquire about wholesale eyewear?', 'The Kota store is listed as an optical wholesaler. Call or choose Wholesale enquiry in the form to ask about current ranges and terms.'],
 ];
@@ -102,18 +133,8 @@ export const EYE_FAQS = [
 
 export const categoryHref = type => `/shop/${type}/`;
 export const productHref = id => `/shop/${id}/`;
-export const productImage = id => `/images/${id}.webp`;
-export function productPreview(frame, requestedColor) {
-  const primary = frame.colors[0];
-  const color = frame.colors.includes(requestedColor) ? requestedColor : primary;
-  const name = COLORS[color].name;
-  return {
-    color,
-    name,
-    src: color === primary ? productImage(frame.id) : `/images/variants/${frame.id}-${color}.webp`,
-    alt: color === primary ? frame.alt : `${frame.name} ${CATEGORIES[frame.type].toLowerCase()} in ${name}`,
-  };
-}
+export const collectionHref = audience => `/shop/${audience}/`;
+export const featuredFrames = (audience = '') => PRODUCTS.filter(frame => !audience || frame.audiences.includes(audience)).slice(0, 4);
 
 export const whatsappLink = message => `https://wa.me/${BUSINESS.whatsapp}?text=${encodeURIComponent(message)}`;
 
@@ -121,12 +142,12 @@ export const CATALOGUE_FILTERS = {
   type: CATEGORIES,
   shape: SHAPES,
   color: Object.fromEntries(Object.entries(COLORS).map(([key, value]) => [key, value.name])),
-  material: MATERIALS,
+  rim: RIMS,
   sort: { featured: 'Featured', 'name-asc': 'Name: A to Z', 'name-desc': 'Name: Z to A' },
 };
 
 export function frameSearchText(frame) {
-  return [frame.name, frame.id, CATEGORIES[frame.type], frame.type === 'eyeglasses' ? 'optical prescription glasses specs' : 'sun shades', SHAPES[frame.shape], MATERIALS[frame.material], ...frame.colors.map(color => COLORS[color].name), frame.description].join(' ').toLowerCase();
+  return [frame.name, frame.id, CATEGORIES[frame.type], 'optical prescription glasses specs', SHAPES[frame.shape], RIMS[frame.rim], COLORS[frame.color].name, ...frame.audiences.map(audience => AUDIENCES[audience]), frame.description].join(' ').toLowerCase();
 }
 
 export function parseFilters(params) {
@@ -138,12 +159,12 @@ export function parseFilters(params) {
   return out;
 }
 
-export function filterFrames(frames, { q = '', type, shape, color, material, sort } = {}) {
+export function filterFrames(frames, { q = '', type, shape, color, rim, sort } = {}) {
   const words = q.toLowerCase().trim().split(/\s+/).filter(Boolean);
   const matches = frames.filter(frame => {
-    if (type && frame.type !== type || shape && frame.shape !== shape || material && frame.material !== material || color && !frame.colors.includes(color)) return false;
+    if (type && frame.type !== type || shape && frame.shape !== shape || rim && frame.rim !== rim || color && frame.color !== color) return false;
     const fields = frameSearchText(frame);
-    return words.every(word => fields.includes(word));
+    return words.every(word => Object.hasOwn(AUDIENCES, word) ? frame.audiences.includes(word) : fields.includes(word));
   });
   if (sort === 'name-asc' || sort === 'name-desc') {
     const sign = sort === 'name-asc' ? 1 : -1;

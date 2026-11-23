@@ -3,13 +3,14 @@ import assert from 'node:assert/strict';
 import { access, mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { BUSINESS, INSTAGRAM_URL, PRODUCTS, productHref } from '../public/js/catalog.mjs';
+import { AUDIENCES, BUSINESS, INSTAGRAM_URL, PHOTO_SIZE, PRODUCTS, collectionHref, productHref } from '../public/js/catalog.mjs';
 import { resolveSiteOrigin } from '../src/seo.mjs';
 import { buildSite } from '../src/site.mjs';
 
 const origin = 'https://www.vision.example.test';
-const landingRoutes = ['/', '/shop/', '/shop/eyeglasses/', '/shop/sunglasses/', '/eye-tests/', '/about/', '/contact/'];
-const excludedRoutes = [...PRODUCTS.map(frame => productHref(frame.id)), '/404.html'];
+const landingRoutes = ['/', '/shop/', '/shop/eyeglasses/', '/eye-tests/', '/about/', '/contact/'];
+const audienceRoutes = Object.keys(AUDIENCES).map(collectionHref);
+const excludedRoutes = [...audienceRoutes, ...PRODUCTS.map(frame => productHref(frame.id)), '/404.html'];
 const allRoutes = [...landingRoutes, ...excludedRoutes];
 const outputFile = route => route.endsWith('/') ? `${route.slice(1)}index.html` : route.slice(1);
 const htmlFor = (dir, route) => readFile(join(dir, outputFile(route)), 'utf8');
@@ -102,19 +103,49 @@ test('published structured data describes the real shop, eye tests and breadcrum
   ]);
 });
 
-test('category pages and their frame links do not depend on JavaScript', async t => {
+test('eyeglasses and the two style edits have static frame links', async t => {
   const dir = await tempBuild(t);
   await buildSite(dir, {});
   const home = await htmlFor(dir, '/');
-  for (const type of ['eyeglasses', 'sunglasses']) {
-    assert.ok(home.includes(`<a class="category-card" href="/shop/${type}/">`));
-    const html = await htmlFor(dir, `/shop/${type}/`);
-    assert.match(html, new RegExp(`<h1[^>]*>${type} in Kota`, 'i'));
-    assert.ok(html.includes(`<a class="nav-link" href="/shop/${type}/" aria-current="page">`));
-    assert.ok(html.includes(`href="/shop/?type=${type}"`));
+  for (const audience of Object.keys(AUDIENCES)) {
+    const route = collectionHref(audience);
+    assert.ok(home.includes(`<a class="category-card" href="${route}">`));
+    const html = await htmlFor(dir, route);
+    assert.ok(html.includes(`href="${route}" aria-current="page">${AUDIENCES[audience]}`));
     for (const frame of PRODUCTS) {
-      assert.equal(html.includes(`class="frame-link" href="${productHref(frame.id)}"`), frame.type === type);
+      assert.equal(html.includes(`class="frame-link" href="${productHref(frame.id)}"`), frame.audiences.includes(audience));
     }
+  }
+  const html = await htmlFor(dir, '/shop/eyeglasses/');
+  assert.match(html, /<h1[^>]*>Eyeglasses in Kota/);
+  assert.ok(html.includes('<a class="nav-link" href="/shop/eyeglasses/" aria-current="page">'));
+  for (const frame of PRODUCTS) assert.ok(html.includes(`class="frame-link" href="${productHref(frame.id)}"`));
+});
+
+test('the published catalogue uses new photos and old product routes redirect to a collection', async t => {
+  const dir = await tempBuild(t);
+  await buildSite(dir, { SITE_URL: origin });
+  const { redirects } = JSON.parse(await readFile(new URL('../vercel.json', import.meta.url), 'utf8'));
+  assert.equal(redirects.length, 7);
+  for (const retired of ['/shop/sunglasses/', '/shop/afterlight/', '/shop/solstice/']) {
+    assert.ok(redirects.some(({ source, destination }) => source === retired && destination === '/shop/eyeglasses/'));
+  }
+  for (const { source, destination, permanent } of redirects) {
+    assert.equal(permanent, true);
+    assert.ok(landingRoutes.includes(destination));
+    await assert.rejects(access(join(dir, outputFile(source))), { code: 'ENOENT' });
+    await access(join(dir, outputFile(destination)));
+  }
+  for (const frame of PRODUCTS) {
+    const html = await htmlFor(dir, productHref(frame.id));
+    assert.ok(html.includes(`<meta property="og:image" content="${origin}${frame.photos[0].src}">`));
+    assert.ok(html.includes(`<meta property="og:image:width" content="${PHOTO_SIZE.width}">`));
+    for (const photo of frame.photos) await access(join(dir, photo.src.slice(1)));
+  }
+  for (const route of allRoutes) {
+    const html = await htmlFor(dir, route);
+    assert.doesNotMatch(html, /sunglasses|sunwear/i);
+    assert.doesNotMatch(html, /\/images\/(?:variants\/|category-optical|category-sun|campaign|regent|boulevard|arcade|meridian|afterlight|solstice)/);
   }
 });
 

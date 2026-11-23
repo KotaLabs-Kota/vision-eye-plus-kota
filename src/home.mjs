@@ -1,12 +1,13 @@
-import { APPOINTMENT, BUSINESS, CATEGORIES, FIT_GUIDE, PRODUCTS, REVIEWS, SHAPES, categoryHref } from '../public/js/catalog.mjs';
-import { frameCard, icon } from '../public/js/components.mjs';
+import { APPOINTMENT, AUDIENCES, BUSINESS, FIT_GUIDE, PHOTO_SIZE, PRODUCTS, REVIEWS, SHAPES, collectionHref, featuredFrames } from '../public/js/catalog.mjs';
+import { escapeHtml, frameCard, icon } from '../public/js/components.mjs';
 import { externalAttrs, storeAddress } from './layout.mjs';
 import { reels } from './reels.mjs';
 
+const photoFor = id => PRODUCTS.find(frame => frame.id === id).photos[0];
+const heroPhoto = photoFor('silver-aviator');
 const categories = [
-  { title: 'Eyeglasses', subtitle: 'Find frames for your prescription.', image: 'category-optical', alt: 'Translucent optical glasses on lavender display plinths', link: categoryHref('eyeglasses'), number: '01' },
-  { title: 'Sunglasses', subtitle: 'Compare sun frame shapes and fit.', image: 'category-sun', alt: 'Tortoiseshell sunglasses on a sunny yellow display', link: categoryHref('sunglasses'), number: '02' },
-  { title: 'Eye tests', subtitle: 'Find out what to bring to the shop.', image: 'eye-care', alt: 'Illustration of a routine in-store vision test', link: '/eye-tests/', number: '03' },
+  { title: 'Men’s frames', subtitle: 'Aviators, squares and clean lines.', photo: photoFor('bold-black-square'), link: collectionHref('men'), number: '01' },
+  { title: 'Women’s frames', subtitle: 'Clear, colourful and rimless frames.', photo: photoFor('crystal-curve'), link: collectionHref('women'), number: '02' },
 ];
 
 function trustItem(symbol, title, description, href, extra = '') {
@@ -28,15 +29,16 @@ function hero() {
       <div class="hero-copy">
         <p class="eyebrow hero-eyebrow">${icon('spark')} VISION EYE PLUS</p>
         <h1 id="home-heading">Optical shop<br> <em>in Kota.</em></h1>
-        <p class="hero-lead">Try on eyeglasses and sunglasses opposite City Mall on Jhalawar Road. Bring your prescription or ask about an in-store eye test.</p>
+        <p class="hero-lead">Browse our eyeglass frames and contact us to order or arrange a try-on. Find us opposite City Mall on Jhalawar Road.</p>
         <div class="actions hero-actions">
           <a class="button button--primary" href="/shop/">Explore frames ${icon('arrow')}</a>
           <a class="button button--outline" href="${APPOINTMENT}">${icon('calendar')} Book an eye test</a>
         </div>
       </div>
-      <figure class="hero-image">
-        <img src="/images/campaign.webp" srcset="/images/campaign-small.webp 680w, /images/campaign.webp 1200w" sizes="(max-width: 760px) 100vw, (max-width: 1360px) 53vw, 680px" width="1200" height="896" alt="Woman in bold black optical frames and a lilac blazer" fetchpriority="high">
-        <figcaption class="edit-label"><span class="edit-dot"></span> THE VISION EDIT <span class="edit-index">01</span></figcaption>
+      <figure class="hero-image eyewear-plate">
+        <span class="plate-index" aria-hidden="true">VISION EYE PLUS / KOTA</span>
+        <img src="${heroPhoto.src}" width="${PHOTO_SIZE.width}" height="${PHOTO_SIZE.height}" alt="${escapeHtml(heroPhoto.alt)}" fetchpriority="high">
+        <figcaption class="edit-label"><span class="edit-dot"></span> SILVER AVIATOR <span class="edit-index">01</span></figcaption>
       </figure>
     </section>
     <div class="trust-bar" role="group" aria-label="Why visit Vision Eye Plus">
@@ -52,8 +54,8 @@ function categorySection() {
     <div class="section-heading split-heading"><div><p class="eyebrow">THE COLLECTION</p><h2 id="category-heading">Find your kind of frame.</h2></div>
     <a class="text-link" href="/shop/">Browse the collection ${icon('up-right')}</a></div>
     <div class="category-grid">${categories.map(category => `<a class="category-card" href="${category.link}">
-      <div class="category-image category-image--${category.number}">
-        <img src="/images/${category.image}.webp" width="1040" height="698" alt="${category.alt}" loading="lazy"><span class="category-index">${category.number} / 03</span>
+      <div class="category-image eyewear-plate category-image--${category.number}">
+        <img src="${category.photo.src}" width="${PHOTO_SIZE.width}" height="${PHOTO_SIZE.height}" alt="" loading="lazy"><span class="category-index" aria-hidden="true">${category.number} / ${String(categories.length).padStart(2, '0')}</span>
       </div>
       <div class="category-copy"><div><h3>${category.title}</h3><p>${category.subtitle}</p></div><span class="circle-arrow">${icon('arrow')}</span></div>
     </a>`).join('')}</div>
@@ -62,15 +64,15 @@ function categorySection() {
 
 function featured() {
   return `<section class="wrap section featured" aria-labelledby="featured-heading" data-featured>
-    <div class="section-heading split-heading"><div><p class="eyebrow">THE FRAME EDIT</p><h2 id="featured-heading">Take a closer look.</h2><p class="section-lead">Six style ideas for your next in-store try-on.</p></div>
+    <div class="section-heading split-heading"><div><p class="eyebrow">THE FRAME EDIT</p><h2 id="featured-heading">Take a closer look.</h2><p class="section-lead">Explore the photos, then ask the shop about your favourites.</p></div>
       <div class="segmented" role="group" aria-label="Filter featured frames" data-js>
-        <button type="button" aria-pressed="true" data-feature="all">All frames</button>
-        ${Object.entries(CATEGORIES).map(([key, label]) => `<button type="button" aria-pressed="false" data-feature="${key}">${label}</button>`).join('')}
+        <button type="button" aria-pressed="true" data-feature="">Featured</button>
+        ${Object.entries(AUDIENCES).map(([key, label]) => `<button type="button" aria-pressed="false" data-feature="${key}">${label}</button>`).join('')}
       </div>
     </div>
     <p class="visually-hidden" role="status" data-feature-status></p>
-    <div class="frame-grid" data-feature-grid>${PRODUCTS.slice(0, 4).map(frameCard).join('')}</div>
-    <div class="feature-bottom"><p>Shown for inspiration. Check with the shop for current stock and prices.</p><a class="text-link" href="/shop/">View all frames ${icon('arrow')}</a></div>
+    <div class="frame-grid" data-feature-grid>${featuredFrames().map(frameCard).join('')}</div>
+    <div class="feature-bottom"><p>Check stock and current pricing with the shop before you order.</p><a class="text-link" href="/shop/">View all frames ${icon('arrow')}</a></div>
   </section>`;
 }
 

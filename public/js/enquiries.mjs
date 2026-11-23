@@ -29,14 +29,18 @@ export function contactMessage({ name, topic, date, time, message }) {
   ].filter(Boolean).join('\n');
 }
 
-export function productMessage(frame, { color, fit, lens }, pageUrl) {
-  const colourName = frame.colors.includes(color) ? COLORS[color].name : COLORS[frame.colors[0]].name;
+export const FIT_PREFERENCES = ['Not sure', 'Narrow', 'Regular', 'Wide'];
+export const LENS_PREFERENCES = {
+  eyeglasses: ['Help me choose', 'Single vision', 'Progressive', 'Non-prescription'],
+};
+
+export function productMessage(frame, { fit, lens } = {}, pageUrl) {
   return [
-    `Hi Vision Eye Plus! I’m interested in a frame like ${frame.name} (${CATEGORIES[frame.type]}).`,
-    `Colour preference: ${colourName}`,
-    `Fit preference: ${fit || 'Not sure'}`,
-    `Lens preference: ${lens || 'Help me choose'}`,
-    'Could you share similar styles, prices, and availability for a try-on?',
-    pageUrl && `Style reference: ${pageUrl}`,
+    `Hi Vision Eye Plus! I’m interested in ${frame.name} (${CATEGORIES[frame.type]}).`,
+    `Colour shown: ${COLORS[frame.color].name}`,
+    FIT_PREFERENCES.includes(fit) && fit !== FIT_PREFERENCES[0] ? `Fit preference: ${fit}` : '',
+    LENS_PREFERENCES[frame.type].includes(lens) && lens !== LENS_PREFERENCES[frame.type][0] ? `Lens preference: ${lens}` : '',
+    'Is this frame available to try or order? Could you share the current price and lens options?',
+    pageUrl && `Frame: ${pageUrl}`,
   ].filter(Boolean).join('\n');
 }

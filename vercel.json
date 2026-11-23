@@ -3,5 +3,42 @@
   "framework": null,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "trailingSlash": true
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/shop/regent/",
+      "destination": "/shop/eyeglasses/",
+      "permanent": true
+    },
+    {
+      "source": "/shop/boulevard/",
+      "destination": "/shop/eyeglasses/",
+      "permanent": true
+    },
+    {
+      "source": "/shop/arcade/",
+      "destination": "/shop/eyeglasses/",
+      "permanent": true
+    },
+    {
+      "source": "/shop/meridian/",
+      "destination": "/shop/eyeglasses/",
+      "permanent": true
+    },
+    {
+      "source": "/shop/solstice/",
+      "destination": "/shop/eyeglasses/",
+      "permanent": true
+    },
+    {
+      "source": "/shop/afterlight/",
+      "destination": "/shop/eyeglasses/",
+      "permanent": true
+    },
+    {
+      "source": "/shop/sunglasses/",
+      "destination": "/shop/eyeglasses/",
+      "permanent": true
+    }
+  ]
 }

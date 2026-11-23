@@ -46,7 +46,7 @@ export function about() {
     ${breadcrumbs(aboutTrail)}
     <section class="split-panel inner-hero split-panel--about" aria-labelledby="about-title">
       <div class="split-copy"><p class="eyebrow">${icon('spark')} OUR KOTA SHOP</p><h1 id="about-title">Your optician<br class="desktop-break"> in Kota.</h1>
-        <p>Vision Eye Plus is an optical shop and wholesaler on Jhalawar Road. Try on <a href="${categoryHref('eyeglasses')}">eyeglasses</a> and <a href="${categoryHref('sunglasses')}">sunglasses</a>, talk through prescription lenses or ask about an eye test.</p>
+        <p>Vision Eye Plus is an optical shop and wholesaler on Jhalawar Road. Try on <a href="${categoryHref('eyeglasses')}">eyeglasses</a>, talk through prescription lenses or ask about an eye test.</p>
         <div class="actions"><a class="button button--primary" href="/contact/">Plan your visit ${icon('arrow')}</a><a class="text-link" href="${BUSINESS.maps}" ${externalAttrs}>View on Google Maps ${icon('up-right')}</a></div></div>
       <figure class="split-image store-photo"><img src="/images/kota-store.webp" width="453" height="463" alt="Interior of the Vision Eye Plus shop with eyewear displays along both walls" fetchpriority="high"><figcaption class="edit-label"><span class="edit-dot"></span> THE JHALAWAR ROAD SHOP</figcaption></figure>
     </section>
