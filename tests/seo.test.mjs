@@ -3,12 +3,12 @@ import assert from 'node:assert/strict';
 import { access, mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { AUDIENCES, BUSINESS, INSTAGRAM_DM_URL, INSTAGRAM_URL, PHOTO_SIZE, PRODUCTS, collectionHref, productHref } from '../public/js/catalog.mjs';
+import { AUDIENCES, BUSINESS, INSTAGRAM_URL, PHOTO_SIZE, PRODUCTS, collectionHref, productHref } from '../public/js/catalog.mjs';
 import { resolveSiteOrigin } from '../src/seo.mjs';
 import { buildSite } from '../src/site.mjs';
 
 const origin = 'https://www.vision.example.test';
-const landingRoutes = ['/', '/shop/', '/shop/eyeglasses/', '/shop/sunglasses/', '/eye-tests/', '/about/', '/contact/'];
+const landingRoutes = ['/', '/shop/', '/shop/eyeglasses/', '/eye-tests/', '/about/', '/contact/'];
 const audienceRoutes = Object.keys(AUDIENCES).map(collectionHref);
 const excludedRoutes = [...audienceRoutes, ...PRODUCTS.map(frame => productHref(frame.id)), '/404.html'];
 const allRoutes = [...landingRoutes, ...excludedRoutes];
@@ -103,7 +103,7 @@ test('published structured data describes the real shop, eye tests and breadcrum
   ]);
 });
 
-test('collection pages have static frame links and sunglasses use an enquiry-only section', async t => {
+test('eyeglasses and the two style edits have static frame links', async t => {
   const dir = await tempBuild(t);
   await buildSite(dir, {});
   const home = await htmlFor(dir, '/');
@@ -116,26 +116,20 @@ test('collection pages have static frame links and sunglasses use an enquiry-onl
       assert.equal(html.includes(`class="frame-link" href="${productHref(frame.id)}"`), frame.audiences.includes(audience));
     }
   }
-  for (const type of ['eyeglasses', 'sunglasses']) {
-    const html = await htmlFor(dir, `/shop/${type}/`);
-    assert.match(html, new RegExp(`<h1[^>]*>${type} in Kota`, 'i'));
-    assert.ok(html.includes(`<a class="nav-link" href="/shop/${type}/" aria-current="page">`));
-    for (const frame of PRODUCTS) {
-      assert.equal(html.includes(`class="frame-link" href="${productHref(frame.id)}"`), frame.type === type);
-    }
-    if (type === 'sunglasses') {
-      assert.ok(html.includes(`href="${INSTAGRAM_DM_URL}"`));
-      assert.match(html, /Our online photos show eyeglasses/);
-      assert.ok(!html.includes('/images/catalog/'));
-    }
-  }
+  const html = await htmlFor(dir, '/shop/eyeglasses/');
+  assert.match(html, /<h1[^>]*>Eyeglasses in Kota/);
+  assert.ok(html.includes('<a class="nav-link" href="/shop/eyeglasses/" aria-current="page">'));
+  for (const frame of PRODUCTS) assert.ok(html.includes(`class="frame-link" href="${productHref(frame.id)}"`));
 });
 
 test('the published catalogue uses new photos and old product routes redirect to a collection', async t => {
   const dir = await tempBuild(t);
   await buildSite(dir, { SITE_URL: origin });
   const { redirects } = JSON.parse(await readFile(new URL('../vercel.json', import.meta.url), 'utf8'));
-  assert.equal(redirects.length, 6);
+  assert.equal(redirects.length, 7);
+  for (const retired of ['/shop/sunglasses/', '/shop/afterlight/', '/shop/solstice/']) {
+    assert.ok(redirects.some(({ source, destination }) => source === retired && destination === '/shop/eyeglasses/'));
+  }
   for (const { source, destination, permanent } of redirects) {
     assert.equal(permanent, true);
     assert.ok(landingRoutes.includes(destination));
@@ -149,7 +143,9 @@ test('the published catalogue uses new photos and old product routes redirect to
     for (const photo of frame.photos) await access(join(dir, photo.src.slice(1)));
   }
   for (const route of allRoutes) {
-    assert.doesNotMatch(await htmlFor(dir, route), /\/images\/(?:variants\/|category-optical|category-sun|campaign|regent|boulevard|arcade|meridian|afterlight|solstice)/);
+    const html = await htmlFor(dir, route);
+    assert.doesNotMatch(html, /sunglasses|sunwear/i);
+    assert.doesNotMatch(html, /\/images\/(?:variants\/|category-optical|category-sun|campaign|regent|boulevard|arcade|meridian|afterlight|solstice)/);
   }
 });
 

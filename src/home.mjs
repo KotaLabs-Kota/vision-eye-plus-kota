@@ -1,4 +1,4 @@
-import { APPOINTMENT, AUDIENCES, BUSINESS, FIT_GUIDE, PHOTO_SIZE, PRODUCTS, REVIEWS, SHAPES, categoryHref, collectionHref, featuredFrames } from '../public/js/catalog.mjs';
+import { APPOINTMENT, AUDIENCES, BUSINESS, FIT_GUIDE, PHOTO_SIZE, PRODUCTS, REVIEWS, SHAPES, collectionHref, featuredFrames } from '../public/js/catalog.mjs';
 import { escapeHtml, frameCard, icon } from '../public/js/components.mjs';
 import { externalAttrs, storeAddress } from './layout.mjs';
 import { reels } from './reels.mjs';
@@ -8,7 +8,6 @@ const heroPhoto = photoFor('silver-aviator');
 const categories = [
   { title: 'Men’s frames', subtitle: 'Aviators, squares and clean lines.', photo: photoFor('bold-black-square'), link: collectionHref('men'), number: '01' },
   { title: 'Women’s frames', subtitle: 'Clear, colourful and rimless frames.', photo: photoFor('crystal-curve'), link: collectionHref('women'), number: '02' },
-  { title: 'Sunglasses', subtitle: 'Ask the shop for styles and photos.', link: categoryHref('sunglasses'), number: '03' },
 ];
 
 function trustItem(symbol, title, description, href, extra = '') {
@@ -55,8 +54,8 @@ function categorySection() {
     <div class="section-heading split-heading"><div><p class="eyebrow">THE COLLECTION</p><h2 id="category-heading">Find your kind of frame.</h2></div>
     <a class="text-link" href="/shop/">Browse the collection ${icon('up-right')}</a></div>
     <div class="category-grid">${categories.map(category => `<a class="category-card" href="${category.link}">
-      <div class="category-image eyewear-plate category-image--${category.number}${category.photo ? '' : ' eyewear-plate--sun'}">
-        ${category.photo ? `<img src="${category.photo.src}" width="${PHOTO_SIZE.width}" height="${PHOTO_SIZE.height}" alt="" loading="lazy">` : icon('sun')}<span class="category-index" aria-hidden="true">${category.number} / 03</span>
+      <div class="category-image eyewear-plate category-image--${category.number}">
+        <img src="${category.photo.src}" width="${PHOTO_SIZE.width}" height="${PHOTO_SIZE.height}" alt="" loading="lazy"><span class="category-index" aria-hidden="true">${category.number} / ${String(categories.length).padStart(2, '0')}</span>
       </div>
       <div class="category-copy"><div><h3>${category.title}</h3><p>${category.subtitle}</p></div><span class="circle-arrow">${icon('arrow')}</span></div>
     </a>`).join('')}</div>

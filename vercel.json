@@ -27,12 +27,17 @@
     },
     {
       "source": "/shop/solstice/",
-      "destination": "/shop/sunglasses/",
+      "destination": "/shop/eyeglasses/",
       "permanent": true
     },
     {
       "source": "/shop/afterlight/",
-      "destination": "/shop/sunglasses/",
+      "destination": "/shop/eyeglasses/",
+      "permanent": true
+    },
+    {
+      "source": "/shop/sunglasses/",
+      "destination": "/shop/eyeglasses/",
       "permanent": true
     }
   ]

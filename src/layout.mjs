@@ -13,7 +13,7 @@ export function shopActions(message, { product = false } = {}) {
 
 const studioUrl = 'https://kotalabs.in/';
 const nav = [
-  ['/', 'Home'], [categoryHref('eyeglasses'), 'Eyeglasses'], [categoryHref('sunglasses'), 'Sunglasses'],
+  ['/', 'Home'], [categoryHref('eyeglasses'), 'Eyeglasses'],
   ['/eye-tests/', 'Eye Tests'], ['/contact/', 'Visit Us'],
 ];
 
@@ -50,7 +50,7 @@ function footer() {
   return `<footer class="site-footer">
     <div class="wrap footer-grid">
       <div class="footer-intro">${brand()}<p>Eyewear, eye tests and a fit that feels right. Find us opposite City Mall in Kota.</p></div>
-      <div class="footer-links"><h2>Explore</h2><a href="/shop/">All frames</a><a href="${collectionHref('men')}">Men’s frames</a><a href="${collectionHref('women')}">Women’s frames</a><a href="${categoryHref('sunglasses')}">Sunglasses</a><a href="/#fit-finder">Frame fit guide</a></div>
+      <div class="footer-links"><h2>Explore</h2><a href="/shop/">All frames</a><a href="${collectionHref('men')}">Men’s frames</a><a href="${collectionHref('women')}">Women’s frames</a><a href="/#fit-finder">Frame fit guide</a></div>
       <div class="footer-links"><h2>The studio</h2><a href="/eye-tests/">Eye tests</a><a href="/about/">About us</a><a href="/contact/">Visit us</a><a href="/contact/#faq">FAQs</a></div>
       <div class="footer-links footer-location"><h2>Find us in Kota</h2>${storeAddress()}<a href="tel:${BUSINESS.phone}">${BUSINESS.phoneDisplay}</a><a class="footer-map" href="${BUSINESS.directions}" ${externalAttrs}>Get directions ${icon('up-right')}</a></div>
     </div>

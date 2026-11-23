@@ -85,6 +85,7 @@ test('filter URLs ignore unknown values and constrain free text', () => {
   assert.deepEqual(state, { q: 'foil', type: 'eyeglasses', shape: 'square', color: '', rim: '', sort: 'name-desc' });
   assert.equal(parseFilters(new URLSearchParams({ q: 'q'.repeat(100), sort: 'bad' })).q.length, 80);
   assert.equal(parseFilters(new URLSearchParams('sort=bad')).sort, 'featured');
+  assert.equal(parseFilters(new URLSearchParams('type=sunglasses')).type, '');
   assert.equal(escapeHtml('"<&>'), '&quot;&lt;&amp;&gt;');
 });
 

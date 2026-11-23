@@ -1,4 +1,4 @@
-import { APPOINTMENT, AUDIENCES, BUSINESS, CATALOGUE_FILTERS, CATEGORIES, COLORS, PHOTO_SIZE, PRODUCTS, RIMS, SHAPES, categoryHref, collectionHref } from '../public/js/catalog.mjs';
+import { APPOINTMENT, AUDIENCES, BUSINESS, CATALOGUE_FILTERS, CATEGORIES, COLORS, PHOTO_SIZE, PRODUCTS, RIMS, SHAPES, collectionHref } from '../public/js/catalog.mjs';
 import { escapeHtml, frameCard, icon } from '../public/js/components.mjs';
 import { FIT_PREFERENCES, LENS_PREFERENCES, productMessage } from '../public/js/enquiries.mjs';
 import { breadcrumbs, productTrail, shopTrail } from './breadcrumbs.mjs';
@@ -7,7 +7,7 @@ import { externalAttrs, shopActions } from './layout.mjs';
 const selectOptions = (options, first) => `${first ? `<option value="">${first}</option>` : ''}${Object.entries(options).map(([value, label]) => `<option value="${value}">${escapeHtml(label)}</option>`).join('')}`;
 
 export function browseNav(current) {
-  const links = [['/shop/', 'All frames'], ...Object.entries(AUDIENCES).map(([key, label]) => [collectionHref(key), label]), [categoryHref('sunglasses'), 'Sunglasses']];
+  const links = [['/shop/', 'All frames'], ...Object.entries(AUDIENCES).map(([key, label]) => [collectionHref(key), label])];
   return `<nav class="browse-nav" aria-label="Shop by collection">${links.map(([href, label]) => `<a href="${href}"${current === href ? ' aria-current="page"' : ''}>${label}</a>`).join('')}</nav>`;
 }
 

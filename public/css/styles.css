@@ -124,10 +124,7 @@ h3 { font-weight: 750; line-height: 1.3; letter-spacing: -.027em; }
 }
 .eyewear-plate::before { content: ''; position: absolute; z-index: -1; width: 59%; aspect-ratio: 1; border: 1px solid var(--plate-detail); border-radius: 50%; box-shadow: 0 0 0 16px #ffffff22, 0 0 0 17px var(--plate-detail), 0 0 0 40px #ffffff16, 0 0 0 41px var(--plate-detail); }
 .eyewear-plate > img { position: absolute; inset: 0; margin: auto; width: 91%; height: 88%; object-fit: contain; mix-blend-mode: multiply; transition: transform .4s ease; }
-.eyewear-plate > .icon { width: 31%; max-width: 185px; height: auto; aspect-ratio: 1; color: #87601e; }
-.eyewear-plate--sun { --plate-light: #fff3d6; --plate-deep: #ebca87; --plate-detail: #94672136; }
 .plate-index { position: absolute; z-index: 1; left: clamp(13px, 3vw, 30px); top: clamp(12px, 2.8vw, 28px); color: #514265; font-size: 9px; font-weight: 800; letter-spacing: .17em; }
-.eyewear-plate--sun .plate-index { color: #674915; }
 .edit-label { position: absolute; display: flex; align-items: center; gap: 8px; right: 20px; bottom: 21px; padding: 9px 11px 9px 12px; border: 1px solid #fff8; border-radius: 100px; color: var(--ink); background: #fbf8f4ee; font-size: 9px; font-weight: 850; letter-spacing: .11em; line-height: 1.2; backdrop-filter: blur(10px); }
 .edit-dot { display: inline-block; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--purple); }
 .edit-index { margin-left: 2px; padding-left: 8px; border-left: 1px solid #d9d0df; color: #5f5071; }
@@ -145,10 +142,10 @@ h3 { font-weight: 750; line-height: 1.3; letter-spacing: -.027em; }
 .trust-chevron { margin-left: auto; width: 15px; height: 15px; color: #7b6a98; }
 .trust-item:hover .trust-chevron { color: var(--purple); }
 .section-categories { margin-top: clamp(42px, 4.1vw, 64px); }
-.category-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.category-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
 .category-card { min-width: 0; border: 1px solid var(--line); border-radius: 17px; overflow: hidden; background: white; transition: border-color .22s; }
 .category-card:hover { border-color: #c7b4e9; }
-.category-image { aspect-ratio: 1.73; }
+.category-image { aspect-ratio: 2.12; }
 .category-image::before { width: 41%; }
 .category-image > img { width: 78%; height: 85%; }
 .category-image--02, .edit--women .eyewear-plate { --plate-light: #faedf3; --plate-deep: #eacde3; --plate-detail: #89576d2c; }
@@ -196,8 +193,7 @@ h3 { font-weight: 750; line-height: 1.3; letter-spacing: -.027em; }
 .split-panel--care { background: #e7eee4; }
 .split-panel--care .eyebrow { color: #31523a; }
 .split-panel--care .button--outline { border-color: #b8c8bc; }
-.split-panel--about, .collection-hero--eyeglasses { background: var(--lavender); }
-.collection-hero--sunglasses { background: #f8e9c4; }
+.split-panel--about, .collection-hero { background: var(--lavender); }
 .split-image { position: relative; min-width: 0; background: #dadecd; }
 .split-image > img { object-position: center; }
 .split-copy { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: clamp(29px, 5vw, 68px); }

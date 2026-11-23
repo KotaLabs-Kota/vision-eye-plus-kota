@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PHOTO_SIZE, PRODUCTS, categoryHref, collectionHref, productHref } from '../public/js/catalog.mjs';
 import { aboutTrail, audienceTrail, categoryTrail, contactTrail, eyeTestsTrail, shopTrail } from './breadcrumbs.mjs';
-import { audiencePages, categoryPages, collection } from './categories.mjs';
+import { audiencePages, collection, eyeglassesPage } from './categories.mjs';
 import { product, shop } from './catalogue.mjs';
 import { home } from './home.mjs';
 import { layout } from './layout.mjs';
@@ -16,20 +16,20 @@ const pages = [
   {
     route: '/', page: 'home', indexable: true, preload: true, render: home,
     title: 'Optical Shop in Kota | Vision Eye Plus',
-    description: 'Visit Vision Eye Plus opposite City Mall on Jhalawar Road, Kota. Try on eyeglasses and sunglasses or ask about an in-store eye test.',
+    description: 'Visit Vision Eye Plus opposite City Mall on Jhalawar Road, Kota. Try on eyeglasses or ask about an in-store eye test.',
   },
   {
     route: '/shop/', page: 'shop', indexable: true, trail: shopTrail, render: shop,
-    title: 'Browse Eyeglasses & Sunglasses | Vision Eye Plus Kota',
+    title: 'Browse Eyeglasses | Vision Eye Plus Kota',
     description: 'Browse frame photos by shape, rim style and colour at Vision Eye Plus in Kota. Open a frame to ask about availability, fitting or ordering.',
   },
-  ...Object.entries(categoryPages).map(([type, category]) => ({
-    route: categoryHref(type), page: 'category', indexable: true, trail: categoryTrail(type),
-    title: category.title, description: category.description, render: () => collection(type),
-  })),
+  {
+    route: categoryHref('eyeglasses'), page: 'category', indexable: true, trail: categoryTrail('eyeglasses'),
+    title: eyeglassesPage.title, description: eyeglassesPage.description, render: () => collection(),
+  },
   ...Object.entries(audiencePages).map(([audience, edit]) => ({
     route: collectionHref(audience), page: 'category', indexable: false, trail: audienceTrail(audience),
-    title: edit.title, description: edit.description, render: () => collection('eyeglasses', audience),
+    title: edit.title, description: edit.description, render: () => collection(audience),
   })),
   {
     route: '/eye-tests/', page: 'eye-tests', indexable: true, trail: eyeTestsTrail, render: eyeTests,

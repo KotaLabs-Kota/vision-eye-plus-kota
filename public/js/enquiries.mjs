@@ -32,7 +32,6 @@ export function contactMessage({ name, topic, date, time, message }) {
 export const FIT_PREFERENCES = ['Not sure', 'Narrow', 'Regular', 'Wide'];
 export const LENS_PREFERENCES = {
   eyeglasses: ['Help me choose', 'Single vision', 'Progressive', 'Non-prescription'],
-  sunglasses: ['Help me choose', 'Sun lenses', 'Prescription sun lenses'],
 };
 
 export function productMessage(frame, { fit, lens } = {}, pageUrl) {

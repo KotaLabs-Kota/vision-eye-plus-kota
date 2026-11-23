@@ -27,7 +27,6 @@ export const INSTAGRAM_DM_URL = `https://ig.me/m/${BUSINESS.instagramHandle}`;
 
 export const CATEGORIES = {
   eyeglasses: 'Eyeglasses',
-  sunglasses: 'Sunglasses',
 };
 
 export const AUDIENCES = { men: 'Men', women: 'Women' };
@@ -148,7 +147,7 @@ export const CATALOGUE_FILTERS = {
 };
 
 export function frameSearchText(frame) {
-  return [frame.name, frame.id, CATEGORIES[frame.type], frame.type === 'eyeglasses' ? 'optical prescription glasses specs' : 'sun shades', SHAPES[frame.shape], RIMS[frame.rim], COLORS[frame.color].name, ...frame.audiences.map(audience => AUDIENCES[audience]), frame.description].join(' ').toLowerCase();
+  return [frame.name, frame.id, CATEGORIES[frame.type], 'optical prescription glasses specs', SHAPES[frame.shape], RIMS[frame.rim], COLORS[frame.color].name, ...frame.audiences.map(audience => AUDIENCES[audience]), frame.description].join(' ').toLowerCase();
 }
 
 export function parseFilters(params) {

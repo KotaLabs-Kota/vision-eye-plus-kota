@@ -91,7 +91,6 @@ window.addEventListener('storage', event => {
 
 const quickSearch = [
   { title: 'Eyeglasses', desc: 'Explore everyday frames', href: categoryHref('eyeglasses'), icon: 'glasses', terms: 'eyeglasses eyewear glasses prescription frames optical spectacles' },
-  { title: 'Sunglasses', desc: 'Explore sun frames', href: categoryHref('sunglasses'), icon: 'sun', terms: 'sunglasses sun shades' },
   ...Object.entries(AUDIENCES).map(([audience, title]) => ({ title: `${title}’s frames`, desc: 'Browse the collection', href: collectionHref(audience), icon: 'glasses', audience, terms: 'eyeglasses eyewear glasses frames' })),
   { title: 'In-store eye tests', desc: 'What to expect in Kota', href: '/eye-tests/', icon: 'eye', terms: 'eye tests testing optometrist prescription exam vision check' },
   { title: 'Visit the shop', desc: 'Address, hours and directions', href: '/contact/', icon: 'pin', terms: 'visit shop store contact directions hours location phone kota jhalawar city mall wholesale' },
@@ -271,10 +270,6 @@ function setupCatalogue() {
   function setFromLocation() {
     clearTimeout(inputTimer);
     const filters = readLocation();
-    if (filters.type === 'sunglasses' && !PRODUCTS.some(frame => frame.type === 'sunglasses')) {
-      location.replace(categoryHref('sunglasses'));
-      return;
-    }
     syncForm(filters);
     render(filters);
   }
